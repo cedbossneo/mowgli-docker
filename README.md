@@ -35,7 +35,7 @@ systemctl start ser2net
 - Clone this repository somewhere on your system.
 - Install Docker ( curl -sSL https://get.docker.com | sh )
 - Edit your Mowgli config in the config directory
-- Put your map on the ros directory.
+- Put your map in the ros directory.
 
 Finally, launch:
 
