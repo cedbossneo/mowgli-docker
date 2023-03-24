@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  mosquitto:
+    hostname: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: always
+    volumes:
+      - ./config/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    ports:
+      - "1883:1883"
+  mowgli:
+    image: cedbossneo/mowgli
+    network_mode: host
+    volumes:
+      - ./map:/home/ubuntu/.ros/
+      - ./config/mowgli/mowgli_config.sh:/home/ubuntu/MowgliRover/src/mowgli/config/mowgli_config.sh:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /dev:/dev
+    privileged: true
+    depends_on:
+      - gps-relay
+      - mowgli-relay
+      - imu-relay
+  gps-relay:
+    image: alpine/socat
+    command: "pty,link=/dev/ttyACM0,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4002"
+    restart: unless-stopped
+    privileged: true
+    volumes:
+    - /dev:/dev
+  mowgli-relay:
+    image: alpine/socat
+    command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4001"
+    restart: unless-stopped
+    privileged: true
+    volumes:
+    - /dev:/dev
+  imu-relay:
+    image: alpine/socat
+    command: "pty,link=/dev/ttyAMA0,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4003"
+    restart: unless-stopped
+    privileged: true
+    volumes:
+    - /dev:/dev
