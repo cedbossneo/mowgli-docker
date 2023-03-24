@@ -63,6 +63,10 @@ You can use the scripts in buttons directory to press home / start
 docker-compose logs -f mowgli
 ```
 
+### RViz
+
+ROS Ports are exposed to the host machine so you can easily access RViz by setting your ROS_MASTER_IP to the machine where your docker container runs.
+
 ### Shutdown
 
 ```bash
