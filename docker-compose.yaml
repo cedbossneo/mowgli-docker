@@ -13,7 +13,7 @@ services:
     image: cedbossneo/mowgli
     network_mode: host
     volumes:
-      - ./map:/home/ubuntu/.ros/
+      - ./ros:/home/ubuntu/.ros/
       - ./config/mowgli/mowgli_config.sh:/home/ubuntu/MowgliRover/src/mowgli/config/mowgli_config.sh:ro
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
