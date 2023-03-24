@@ -46,6 +46,8 @@ RUN chmod +x /home/ubuntu/apt-install.sh && sudo /home/ubuntu/apt-install.sh
 RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && ./scripts/build_all.sh'
 
 ADD bridge.conf /home/ubuntu/MowgliRover/src/mowgli/scripts/bridge.conf
+ADD press_home.sh /home/ubuntu/press_home.sh
+ADD press_start.sh /home/ubuntu/press_start.sh
 ADD entrypoint.sh /entrypoint.sh
 
 CMD [ "/entrypoint.sh" ]

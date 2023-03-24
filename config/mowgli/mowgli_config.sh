@@ -9,7 +9,7 @@ export OM_MOWER="YardForce500-Mowgli"
 ##     Mowgli Settings        ##
 ################################
 export MOWGLI_GPS_ANTENNA_OFFSET=0.36
-export MOWGLI_IMU_OFFSET=-90.0
+export MOWGLI_IMU_OFFSET=0.0
 export MOWGLI_DATUM_LAT=48.8831951
 export MOWGLI_DATUM_LONG=2.1661984
 export MOWGLI_GPS_FILTER_FACTOR=1.0
