@@ -10,7 +10,7 @@ services:
     ports:
       - "1883:1883"
   roscore:
-    image: cedbossneo/mowgli
+    image: ghcr.io/cedbossneo/mowgli-docker:cloudn1ne
     network_mode: host
     pull_policy: always
     tty: true
@@ -22,7 +22,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     privileged: true
   rosserial:
-    image: cedbossneo/mowgli
+    image: ghcr.io/cedbossneo/mowgli-docker:cloudn1ne
     network_mode: host
     pull_policy: always
     tty: true
@@ -43,7 +43,7 @@ services:
       - mowgli-relay
       - imu-relay
   mowgli:
-    image: cedbossneo/mowgli
+    image: ghcr.io/cedbossneo/mowgli-docker:cloudn1ne
     network_mode: host
     pull_policy: always
     restart: unless-stopped
