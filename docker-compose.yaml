@@ -9,9 +9,44 @@ services:
       - ./config/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
     ports:
       - "1883:1883"
+  roscore:
+    image: cedbossneo/mowgli
+    network_mode: host
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    command:
+      - /opt/ros/noetic/bin/roscore
+    volumes:
+      - ./ros:/home/ubuntu/.ros/
+      - /etc/timezone:/etc/timezone:ro
+    privileged: true
+  rosserial:
+    image: cedbossneo/mowgli
+    network_mode: host
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    command:
+      - /opt/ros/noetic/bin/rosrun
+      - rosserial_python
+      - serial_node.py
+      - _port:=/dev/mowgli
+      - _baud:=115200
+    volumes:
+      - ./ros:/home/ubuntu/.ros/
+      - /etc/timezone:/etc/timezone:ro
+      - /dev:/dev
+    privileged: true
+    depends_on:
+      - gps-relay
+      - mowgli-relay
+      - imu-relay
   mowgli:
     image: cedbossneo/mowgli
     network_mode: host
+    pull_policy: always
+    restart: unless-stopped
     tty: true
     volumes:
       - ./ros:/home/ubuntu/.ros/
@@ -20,9 +55,8 @@ services:
       - /dev:/dev
     privileged: true
     depends_on:
-      - gps-relay
-      - mowgli-relay
-      - imu-relay
+      - roscore
+      - rosserial
   gps-relay:
     image: alpine/socat
     command: "pty,link=/dev/ttyACM0,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4002"
