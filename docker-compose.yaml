@@ -12,6 +12,7 @@ services:
   mowgli:
     image: cedbossneo/mowgli
     network_mode: host
+    tty: true
     volumes:
       - ./ros:/home/ubuntu/.ros/
       - ./config/mowgli/mowgli_config.sh:/home/ubuntu/MowgliRover/src/mowgli/config/mowgli_config.sh:ro
