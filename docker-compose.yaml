@@ -49,6 +49,7 @@ services:
     restart: unless-stopped
     tty: true
     volumes:
+      - ./params:/home/ubuntu/MowgliRover/src/mowgli/params:ro
       - ./ros:/home/ubuntu/.ros/
       - ./config/mowgli/mowgli_config.sh:/home/ubuntu/MowgliRover/src/mowgli/config/mowgli_config.sh:ro
       - /etc/timezone:/etc/timezone:ro
