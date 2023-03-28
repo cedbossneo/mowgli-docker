@@ -17,11 +17,11 @@ Edit /etc/ser2net.conf and add theses lines on the bottom, change devices accord
 
 ```
 # Mowgli
-4001:raw:600:/dev/ttyACM0:115200 8DATABITS NONE 1STOPBIT
+4001:raw:600:/dev/ttyACM0:115200
 # GPS
-4002:raw:600:/dev/ttyACM1:921600 8DATABITS NONE 1STOPBIT
+4002:raw:600:/dev/ttyACM1:921600
 # IMU
-4003:telnet:600:/dev/ttyAMA0:9600 8DATABITS NONE 1STOPBIT
+4003:raw:600:/dev/ttyAMA0:9600
 ```
 
 Finally
