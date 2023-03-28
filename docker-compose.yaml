@@ -59,21 +59,21 @@ services:
       - rosserial
   gps-relay:
     image: alpine/socat
-    command: "pty,link=/dev/ttyACM0,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4002"
+    command: "pty,link=/dev/ttyACM0,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660 tcp:${MOWER_IP}:4002"
     restart: unless-stopped
     privileged: true
     volumes:
     - /dev:/dev
   mowgli-relay:
     image: alpine/socat
-    command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4001"
+    command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660 tcp:${MOWER_IP}:4001"
     restart: unless-stopped
     privileged: true
     volumes:
     - /dev:/dev
   imu-relay:
     image: alpine/socat
-    command: "pty,link=/dev/ttyAMA0,ignoreof,waitslave,group-late=100,user-late=1000,mode=660 tcp:${MOWER_IP}:4003"
+    command: "pty,link=/dev/ttyAMA0,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660 tcp:${MOWER_IP}:4003"
     restart: unless-stopped
     privileged: true
     volumes:
