@@ -61,6 +61,7 @@ FROM deps as build
 USER ubuntu
 
 RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps ftc_local_planner ntrip_client slic3r_coverage_planner xbot_driver_gps xbot_monitoring xbot_msgs xbot_positioning xbot_remote xesc_ros mower_comms mower_logic mower_map mower_msgs mower_simulation mower_utils open_mower'
+RUN bash -c 'cd /home/ubuntu/MowgliRover && git pull'
 RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps mowgli'
 
 # Added mowgli configuration & scripts

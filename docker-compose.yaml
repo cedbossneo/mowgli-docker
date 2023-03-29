@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+  web:
+    image: nginx
+    restart: unless-stopped
+    ports:
+      - 4005:80
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
   mosquitto:
     hostname: mosquitto
     image: eclipse-mosquitto:latest
@@ -9,6 +16,7 @@ services:
       - ./config/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
     ports:
       - "1883:1883"
+      - 9001:9001
   roscore:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
