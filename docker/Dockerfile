@@ -31,7 +31,7 @@ USER ubuntu
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/ubuntu/.bashrc
 RUN echo "source /home/ubuntu/MowgliRover/devel/setup.bash" >> /home/ubuntu/.bashrc
 RUN echo 'alias depit="rosdep install --from-paths src --ignore-src -r -y"' >> /home/ubuntu/.bashrc
-RUN echo 'alias debug="picocom -b 115200 /dev/ttyAMA0"' >> /home/ubuntu/.bashrc
+RUN echo 'alias debug="picocom -b 115200 /dev/debug"' >> /home/ubuntu/.bashrc
 RUN echo 'alias vbat="rostopic echo -n 1 /mowgli/status/v_battery | head -1"' >> /home/ubuntu/.bashrc
 
 ENV HOME=/home/ubuntu 
@@ -60,8 +60,8 @@ FROM deps as build
 
 USER ubuntu
 
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps mower_comms mower_logic mower_map mower_msgs mower_simulation mower_utils open_mower && catkin_make --only-pkg-with-deps mowgli'
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps ntrip_client'
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps ftc_local_planner ntrip_client slic3r_coverage_planner xbot_driver_gps xbot_monitoring xbot_msgs xbot_positioning xbot_remote xesc_ros mower_comms mower_logic mower_map mower_msgs mower_simulation mower_utils open_mower'
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps mowgli'
 
 # Added mowgli configuration & scripts
 ADD bridge.conf /home/ubuntu/MowgliRover/src/mowgli/scripts/bridge.conf

@@ -1,1 +1,1 @@
-ll_serial_port: "/dev/ttyAMA0"
+ll_serial_port: "/dev/debug"
