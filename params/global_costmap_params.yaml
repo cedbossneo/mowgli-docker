@@ -8,6 +8,3 @@ global_costmap:
   rolling_window: false
   resolution: 0.10
   map_topic: mower_map_service/map
-  # mowgli added to kill Costmap2DROS transform timeout. caused by slow MowEnable SVC
-  transform_tolerance: 0.5
-

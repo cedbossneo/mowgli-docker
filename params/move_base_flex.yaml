@@ -7,18 +7,7 @@ controllers:
     type: ftc_local_planner/FTCPlanner
   - name: DockingFTCPlanner
     type: ftc_local_planner/FTCPlanner
-  - name: FreePlanner
-    #type: ftc_local_planner/FTCPlanner
-    type: teb_local_planner/TebLocalPlannerROS
-  # testing only planners below
-  - name: CalibrationPlanner
-    type: ftc_local_planner/FTCPlanner
-  - name: CalibrationFastPlanner
-    type: ftc_local_planner/FTCPlanner
-  - name: CalibrationPlannerTestA
-    type: ftc_local_planner/FTCPlanner
-  - name: CalibrationPlannerTestB
-    type: ftc_local_planner/FTCPlanner
+
 
 controller_frequency: 1.0
 controller_patience: 30.0

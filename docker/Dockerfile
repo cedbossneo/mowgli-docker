@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:20.04 as base
 
 # Set timezone
 
@@ -6,7 +6,7 @@ ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Add ROS repository
-RUN apt-get update && apt-get install -y curl git gnupg iproute2 sudo
+RUN apt-get update && apt-get install -y curl git gnupg iproute2 sudo apt-utils
 RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 
@@ -36,13 +36,12 @@ RUN echo 'alias vbat="rostopic echo -n 1 /mowgli/status/v_battery | head -1"' >>
 
 ENV HOME=/home/ubuntu 
 
-RUN cd /home/ubuntu && git clone https://github.com/cloudn1ne/MowgliRover.git
+FROM base as deps
+
+RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/MowgliRover.git
 
 # Checkout mowgli & fix repository commits
 RUN bash -c 'cd /home/ubuntu/MowgliRover/ && git submodule update --init --recursive'
-RUN cd /home/ubuntu/MowgliRover/src/Mowgli-open_mower_ros/ && git checkout main
-RUN cd /home/ubuntu/MowgliRover/src/Mowgli-open_mower_ros/ && git checkout main
-RUN cd /home/ubuntu/MowgliRover/src/Mowgli-open_mower_ros/src/lib/slic3r_coverage_planner && git checkout main
 
 # Install ROS dependencies
 USER root
@@ -50,16 +49,19 @@ RUN rosdep init
 
 USER ubuntu
 
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover/ && rosdep update'
-RUN bash -c 'source /opt/ros/noetic/setup.bash && echo "#!/bin/bash" > /home/ubuntu/apt-install.sh && rosdep install --from-paths /home/ubuntu/MowgliRover/src --ignore-src --simulate | sed --expression "1d" --expression "s/sudo -H apt-get install/apt-get install --no-install-recommends --yes/g" | sort >> /home/ubuntu/apt-install.sh'
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover/ && rosdep update && echo "#!/bin/bash" > /home/ubuntu/apt-install.sh && rosdep install --from-paths src --ignore-src -r --simulate | sed --expression "1d" --expression "s/sudo -H apt-get install/apt-get install --no-install-recommends --yes/g" | sort >> /home/ubuntu/apt-install.sh'
 
 USER root
 
 RUN chmod +x /home/ubuntu/apt-install.sh && /home/ubuntu/apt-install.sh
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+FROM deps as build
 
 USER ubuntu
 
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && ./scripts/build_all.sh'
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps mower_comms mower_logic mower_map mower_msgs mower_simulation mower_utils open_mower && catkin_make --only-pkg-with-deps mowgli'
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps ntrip_client'
 
 # Added mowgli configuration & scripts
 ADD bridge.conf /home/ubuntu/MowgliRover/src/mowgli/scripts/bridge.conf
