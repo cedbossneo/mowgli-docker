@@ -2,25 +2,6 @@
 ## Hardware Specific Settings ##
 ################################
 
-################################
-##     Mowgli Settings        ##
-################################
-export MOWGLI_GPS_ANTENNA_OFFSET=0.36
-export MOWGLI_IMU_OFFSET=-90.0
-export MOWGLI_DATUM_LAT=48.8831951
-export MOWGLI_DATUM_LONG=2.1661984
-export MOWGLI_GPS_FILTER_FACTOR=1.0
-export MOWGLI_MAX_DISTANCE_TO_LAST_GPS_POS=0.10
-export MOWGLI_GPSRTK_FIX_REQUIRED=false
-# DR settings
-export MOWGLI_DR_MAX_DURATION_SEC=20
-export MOWGLI_DR_UPDATE_INTERVAL=1.0
-
-
-################################
-## Hardware Specific Settings ##
-################################
-
 # The type of mower you're using, used to get some hardware parameters automatically
 # Currently supported:
 # YardForce500
@@ -58,10 +39,12 @@ export OM_MOWER_GAMEPAD="xbox360"
 # If OM_USE_RELATIVE_POSITION=True, we're using the ublox NAVRELPOSNED messages as position.
 # This makes your base station the map origin
 # For it recommended to set OM_USE_RELATIVE_POSITION to False. This way you can move your base station without re-recording your maps and it's also more compatible overall.
-export OM_USE_RELATIVE_POSITION=True
+export OM_USE_RELATIVE_POSITION=False
 
 # If needed, uncomment and set to coordinates near you (these default coordinates are somewhere in Germany).
 # This will be your map origin!
+export OM_DATUM_LAT=48.8831951
+export OM_DATUM_LONG=2.1661984
 # export OM_DATUM_LAT=48.13724720055111
 # export OM_DATUM_LONG=11.575605219552623
 
@@ -119,3 +102,5 @@ export OM_ENABLE_MOWER=true
 export OM_AUTOMATIC_START=false
 
 export OM_OUTLINE_OFFSET=0.05
+
+export OM_NO_COMMS=true

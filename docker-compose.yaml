@@ -47,6 +47,7 @@ services:
       - /dev:/dev
     privileged: true
     depends_on:
+      - roscore
       - gps-relay
       - mowgli-relay
       - imu-relay
@@ -58,14 +59,13 @@ services:
     tty: true
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
-      - ./params:/home/ubuntu/MowgliRover/src/Mowgli-open_mower_ros/src/open_mower/params:ro
+      - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
+      - ./config:/home/ubuntu/open_mower_ros/config:ro
       - ./ros:/home/ubuntu/.ros/
-      - ./config/mowgli/mowgli_config.sh:/home/ubuntu/MowgliRover/src/mowgli/config/mowgli_config.sh:ro
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     privileged: true
     depends_on:
-      - roscore
       - rosserial
   gps-relay:
     image: alpine/socat

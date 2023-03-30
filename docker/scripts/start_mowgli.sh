@@ -1,4 +1,4 @@
 #!/bin/bash
-echo "Starting Mowgli"
-source ~/MowgliRover/src/mowgli/config/mowgli_config.sh
-roslaunch mowgli mowgli.launch
+echo "Starting OpenMower"
+source /home/ubuntu/open_mower_ros/src/open_mower/config/mower_config.sh
+roslaunch open_mower open_mower.launch

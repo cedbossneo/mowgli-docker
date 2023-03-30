@@ -29,7 +29,7 @@ USER ubuntu
 
 # Useful debugging aliases
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/ubuntu/.bashrc
-RUN echo "source /home/ubuntu/MowgliRover/devel/setup.bash" >> /home/ubuntu/.bashrc
+RUN echo "source /home/ubuntu/open_mower_ros/devel/setup.bash" >> /home/ubuntu/.bashrc
 RUN echo 'alias depit="rosdep install --from-paths src --ignore-src -r -y"' >> /home/ubuntu/.bashrc
 RUN echo 'alias debug="picocom -b 115200 /dev/debug"' >> /home/ubuntu/.bashrc
 RUN echo 'alias vbat="rostopic echo -n 1 /mowgli/status/v_battery | head -1"' >> /home/ubuntu/.bashrc
@@ -38,10 +38,10 @@ ENV HOME=/home/ubuntu
 
 FROM base as deps
 
-RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/MowgliRover.git
+RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/open_mower_ros
 
 # Checkout mowgli & fix repository commits
-RUN bash -c 'cd /home/ubuntu/MowgliRover/ && git submodule update --init --recursive'
+RUN bash -c 'cd /home/ubuntu/open_mower_ros/ && git submodule update --init --recursive'
 
 # Install ROS dependencies
 USER root
@@ -49,7 +49,7 @@ RUN rosdep init
 
 USER ubuntu
 
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover/ && rosdep update && echo "#!/bin/bash" > /home/ubuntu/apt-install.sh && rosdep install --from-paths src --ignore-src -r --simulate | sed --expression "1d" --expression "s/sudo -H apt-get install/apt-get install --no-install-recommends --yes/g" | sort >> /home/ubuntu/apt-install.sh'
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/open_mower_ros/ && rosdep update && echo "#!/bin/bash" > /home/ubuntu/apt-install.sh && rosdep install --from-paths src --ignore-src -r --simulate | sed --expression "1d" --expression "s/sudo -H apt-get install/apt-get install --no-install-recommends --yes/g" | sort >> /home/ubuntu/apt-install.sh'
 
 USER root
 
@@ -60,12 +60,9 @@ FROM deps as build
 
 USER ubuntu
 
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps ftc_local_planner ntrip_client slic3r_coverage_planner xbot_driver_gps xbot_monitoring xbot_msgs xbot_positioning xbot_remote xesc_ros mower_comms mower_logic mower_map mower_msgs mower_simulation mower_utils open_mower'
-RUN bash -c 'cd /home/ubuntu/MowgliRover && git pull'
-RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/MowgliRover && catkin_make --only-pkg-with-deps mowgli'
-
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/open_mower_ros && catkin_make'
 # Added mowgli configuration & scripts
-ADD bridge.conf /home/ubuntu/MowgliRover/src/mowgli/scripts/bridge.conf
+ADD bridge.conf /home/ubuntu/open_mower_ros/src/mowgli/scripts/bridge.conf
 ADD scripts /home/ubuntu/scripts
 ADD entrypoint.sh /entrypoint.sh
 

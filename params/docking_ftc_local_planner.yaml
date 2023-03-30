@@ -1,28 +1,27 @@
 DockingFTCPlanner:
-  acceleration: 0.1
-  debug_pid: false
+  acceleration: 0.08
   forward_only: false
   goal_timeout: 20.0
   kd_ang: 0.0
   kd_lat: 0.0
   kd_lon: 0.0
   ki_ang: 0.0
-  ki_ang_max: 10.0
+  ki_ang_max: 0.0
   ki_lat: 0.0
-  ki_lat_max: 10.0
+  ki_lat_max: 0.0
   ki_lon: 0.0
-  ki_lon_max: 10.0
-  kp_ang: 1.0
-  kp_lat: 6.15
-  kp_lon: 4.0
-  max_cmd_vel_ang: 3.1
-  max_cmd_vel_speed: 0.5
-  max_follow_distance: 1.0
-  max_goal_angle_error: 20.0
-  max_goal_distance_error: 0.1
+  ki_lon_max: 0.0 
+  kp_ang: 5
+  kp_lat: 20 
+  kp_lon: 3 
+  max_cmd_vel_ang: 0.5
+  max_cmd_vel_speed: 0.2
+  max_follow_distance: 0.2
+  max_goal_angle_error: 10.0
+  max_goal_distance_error: 0.2
   restore_defaults: false
-  speed_angular: 40.0
+  speed_angular: 15.0
   speed_fast: 0.1
-  speed_fast_threshold: 5.0
-  speed_fast_threshold_angle: 5.0
+  speed_fast_threshold: 1.0
+  speed_fast_threshold_angle: 10.0
   speed_slow: 0.1
