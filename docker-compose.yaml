@@ -60,7 +60,7 @@ services:
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
-      - ./config:/home/ubuntu/open_mower_ros/config:ro
+      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
