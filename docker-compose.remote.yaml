@@ -51,7 +51,7 @@ services:
       - gps-relay
       - mowgli-relay
       - imu-relay
-  openmower:
+  mowgli:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
     pull_policy: always
@@ -67,3 +67,24 @@ services:
     privileged: true
     depends_on:
       - rosserial
+  gps-relay:
+    image: alpine/socat
+    command: "pty,link=/dev/gps,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4002"
+    restart: unless-stopped
+    privileged: true
+    volumes:
+    - /dev:/dev
+  mowgli-relay:
+    image: alpine/socat
+    command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4001"
+    restart: unless-stopped
+    privileged: true
+    volumes:
+    - /dev:/dev
+  imu-relay:
+    image: alpine/socat
+    command: "pty,link=/dev/debug,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4003"
+    restart: unless-stopped
+    privileged: true
+    volumes:
+    - /dev:/dev
