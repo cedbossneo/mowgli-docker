@@ -32,7 +32,6 @@ RUN echo "source /opt/ros/noetic/setup.bash" >> /home/ubuntu/.bashrc
 RUN echo "source /home/ubuntu/open_mower_ros/devel/setup.bash" >> /home/ubuntu/.bashrc
 RUN echo 'alias depit="rosdep install --from-paths src --ignore-src -r -y"' >> /home/ubuntu/.bashrc
 RUN echo 'alias debug="picocom -b 115200 /dev/debug"' >> /home/ubuntu/.bashrc
-RUN echo 'alias vbat="rostopic echo -n 1 /mowgli/status/v_battery | head -1"' >> /home/ubuntu/.bashrc
 
 ENV HOME=/home/ubuntu 
 
