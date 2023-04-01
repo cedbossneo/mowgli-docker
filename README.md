@@ -1,10 +1,40 @@
 # Mowgli in Docker
 
-This container runs OpenMower Mowgli software remotely.
+This container runs OpenMower Mowgli software locally or remotely.
 
-## Setup
+## Local
 
-### Mower PI
+### Setup
+
+Install docker with this command :
+
+```bash
+curl https://get.docker.com | sh
+```
+
+Clone this repository
+
+```bash
+git clone https://github.com/cedbossneo/mowgli-docker
+```
+
+The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
+
+WARNING: This branch works only with the new Mowgli firmware https://github.com/cedbossneo/Mowgli that allows Mowgli to runs with vanilla OpenMower without mowgli_proxy or mowgli_blade.
+
+Finally:
+
+```bash
+docker-compose up -d
+```
+
+The OpenMower web app is hosted on port 4005 of your PI.
+
+## Remote
+
+### Setup
+
+#### Mower PI
 
 Be sure you don't run ROS along with ser2net in order to avoid conflicts
 
@@ -19,7 +49,7 @@ Edit /etc/ser2net.conf and add theses lines on the bottom, change devices accord
 # Mowgli
 4001:raw:600:/dev/ttyACM0:115200
 # GPS
-4002:raw:600:/dev/ttyACM1:921600
+4002:raw:600:/dev/ttyACM1:115200
 # IMU
 4003:raw:600:/dev/ttyAMA0:9600
 ```
@@ -30,7 +60,7 @@ Finally
 systemctl start ser2net
 ```
 
-### Remote Machine
+#### Remote Machine
 
 - Clone this repository somewhere on your system.
 - Install Docker ( curl -sSL https://get.docker.com | sh )
