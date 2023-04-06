@@ -11,7 +11,7 @@ on:
     branches: [ "cedbossneo" ]
     paths:
       - docker/**
-      - .github/workflows/docker-publish-amd64-cedbossneo.yaml
+      - .github/workflows/docker-publish-amd64-cedbossneo.yml
 
 
 env:
