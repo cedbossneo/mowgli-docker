@@ -30,7 +30,59 @@ docker-compose up -d
 
 The OpenMower web app is hosted on port 4005 of your PI.
 
-## Remote
+## Remote BY Splitting OpenMower and ROSSERIAL
+
+### Setup
+
+#### Remote Host
+
+Install docker with this command :
+
+```bash
+curl https://get.docker.com | sh
+```
+
+Clone this repository
+
+```bash
+git clone https://github.com/cedbossneo/mowgli-docker
+```
+
+The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
+
+WARNING: You must have the same mower_config on both pi and remote computer
+
+Finally:
+
+```bash
+docker-compose -f docker-compose.remote.host.yaml up -d
+```
+
+#### Mower PI
+
+Install docker with this command :
+
+```bash
+curl https://get.docker.com | sh
+```
+
+Clone this repository
+
+```bash
+git clone https://github.com/cedbossneo/mowgli-docker
+```
+
+The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
+
+WARNING: You must have the same mower_config on both pi and remote computer
+
+Finally:
+
+```bash
+HOST_IP=remote_host_ip docker-compose -f docker-compose.remote.pi.yaml up -d
+```
+
+## Remote BY Serial Redirection (sometimes less stable)
 
 ### Setup
 
@@ -68,13 +120,13 @@ systemctl start ser2net
 Finally, launch:
 
 ```bash
-MOWER_IP=your_mower_ip docker-compose -f docker-compose.remote.yaml up
+MOWER_IP=your_mower_ip docker-compose -f docker-compose.ser2net.yaml up
 ```
 
 or, if you want to have it in deamon mode
 
 ```bash
-MOWER_IP=your_mower_ip docker-compose -f docker-compose.remote.yaml up -d
+MOWER_IP=your_mower_ip docker-compose -f docker-compose.ser2net.yaml up -d
 ```
 
 That's it !
@@ -88,7 +140,7 @@ You can use the scripts in buttons directory to press home / start
 ### Logs
 
 ```bash
-docker-compose -f docker-compose.remote.yaml logs -f mowgli
+docker-compose -f docker-compose.yaml logs -f openmower
 ```
 
 ### RViz
@@ -98,5 +150,5 @@ ROS Ports are exposed to the host machine so you can easily access RViz by setti
 ### Shutdown
 
 ```bash
-docker-compose -f docker-compose.remote.yaml stop
+docker-compose -f docker-compose.yaml stop
 ```

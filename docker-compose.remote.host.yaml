@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
     tty: true
     environment:
-      OM_NO_GPS: False
+      OM_NO_GPS: "True"
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
@@ -45,5 +45,3 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     privileged: true
-    depends_on:
-      - rosserial

@@ -22,8 +22,7 @@ env:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     permissions:
       contents: read
       packages: write
@@ -71,12 +70,9 @@ jobs:
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
           context: docker
-          platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
 
       # Sign the resulting Docker image digest except on PRs.

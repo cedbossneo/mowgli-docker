@@ -4,9 +4,10 @@ services:
   rosserial:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
-    pull_policy: always
     tty: true
     restart: unless-stopped
+    environment:
+      - ROS_MASTER_URI=http://10.0.0.111:11311
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_python
@@ -20,14 +21,13 @@ services:
   gps:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
-    pull_policy: always
     restart: unless-stopped
     tty: true
-    args:
-      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
-      - roslaunch
-      - open_mower
-      - include/_gps.launch
+    environment:
+      - ROS_MASTER_URI=http://10.0.0.111:11311
+    command:
+      - /entrypoint.sh
+      - /home/ubuntu/scripts/start_gps.sh
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
