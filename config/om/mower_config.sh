@@ -73,7 +73,7 @@ export OM_USE_F9R_SENSOR_FUSION=False
 export OM_DOCKING_DISTANCE=1.0
 
 # The distance to drive for undocking. This needs to be large enough for the robot to have GPS reception
-export OM_UNDOCK_DISTANCE=2.0
+export OM_UNDOCK_DISTANCE=1.0
 
 # How many outlines should the mover drive. It's not recommended to set this below 4.
 export OM_OUTLINE_COUNT=4

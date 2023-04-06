@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  rosserial:
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    network_mode: host
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    command:
+      - /opt/ros/noetic/bin/rosrun
+      - rosserial_python
+      - serial_node.py
+      - _port:=/dev/mowgli
+      - _baud:=115200
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /dev:/dev
+    privileged: true
+  gps:
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    network_mode: host
+    pull_policy: always
+    restart: unless-stopped
+    tty: true
+    args:
+      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
+      - roslaunch
+      - open_mower
+      - include/_gps.launch
+    volumes:
+      - ./mower_params:/home/ubuntu/mower_params:ro
+      - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
+      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /dev:/dev
+    privileged: true
