@@ -2,7 +2,7 @@ version: '3'
 
 services:
   rosserial:
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
     tty: true
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
       - /dev:/dev
     privileged: true
   gps:
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
     restart: unless-stopped
     tty: true

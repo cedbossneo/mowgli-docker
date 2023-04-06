@@ -6,6 +6,7 @@ name: Cedbossneo - ARM64
 # documentation.
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "cedbossneo" ]
     paths:
