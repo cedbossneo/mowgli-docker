@@ -10,6 +10,7 @@ on:
     branches: [ "cedbossneo" ]
     paths:
       - docker/**
+      - .github/workflows/docker-publish-arm64-cedbossneo.yaml
 
 env:
   # Use docker.io for Docker Hub if empty
