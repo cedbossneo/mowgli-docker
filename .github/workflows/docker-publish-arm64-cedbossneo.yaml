@@ -59,6 +59,6 @@ jobs:
         with:
           context: docker
           push: true
-          tags: cedbossneo-arm64
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-arm64
           labels: ${{ steps.meta.outputs.labels }}
 
