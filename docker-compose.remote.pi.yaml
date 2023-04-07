@@ -10,8 +10,8 @@ services:
       - ROS_MASTER_URI=http://10.0.0.111:11311
     command:
       - /opt/ros/noetic/bin/rosrun
-      - rosserial_python
-      - serial_node.py
+      - rosserial_server
+      - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
     volumes:

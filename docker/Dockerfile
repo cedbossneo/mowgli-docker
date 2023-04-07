@@ -19,10 +19,9 @@ RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Install required ROS packages
-RUN apt-get -y install g++ cpp cmake ros-noetic-tf2-eigen ros-noetic-teleop-twist-keyboard ros-noetic-robot-state-publisher ros-noetic-joint-state-publisher ros-noetic-map-server ros-noetic-rosserial-server ros-noetic-gps-common picocom   ros-noetic-tf2-geometry-msgs ros-noetic-robot-localization libpigpiod-if-dev wavemon ros-noetic-rosserial-arduino python3-paho-mqtt openocd python3-rosdep ros-noetic-rtcm-msgs libxml2-utils python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+RUN apt-get -y install g++ cpp cmake ros-noetic-tf2-eigen ros-noetic-teleop-twist-keyboard ros-noetic-robot-state-publisher ros-noetic-joint-state-publisher ros-noetic-map-server ros-noetic-gps-common picocom   ros-noetic-tf2-geometry-msgs ros-noetic-robot-localization libpigpiod-if-dev wavemon ros-noetic-rosserial-arduino python3-paho-mqtt openocd python3-rosdep ros-noetic-rtcm-msgs libxml2-utils python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
 RUN echo CATKIN_SHELL=bash >> /opt/ros/noetic/setup.bash
 RUN echo 'source /opt/ros/noetic/setup.sh' >> /opt/ros/noetic/setup.bash
-
 USER ubuntu
 
 # Useful debugging aliases
@@ -35,6 +34,10 @@ ENV HOME=/home/ubuntu
 
 FROM base as deps
 
+RUN mkdir -p /home/ubuntu/rosserial/src && cd /home/ubuntu/rosserial/src && git clone https://github.com/tongtybj/rosserial && cd rosserial && git checkout rosservice_server
+USER root
+RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/rosserial && catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic install --only-pkg-with-deps rosserial_server'
+USER ubuntu
 RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/open_mower_ros && cd open_mower_ros && git checkout 168398f878537095c6a8975782412c8c07786f91
 
 # Checkout mowgli & fix repository commits
