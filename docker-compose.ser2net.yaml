@@ -18,7 +18,7 @@ services:
       - "1883:1883"
       - 9001:9001
   roscore:
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
     tty: true
@@ -29,7 +29,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
     privileged: true
   rosserial:
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
     tty: true
@@ -49,7 +49,7 @@ services:
       - gps-relay
       - mowgli-relay
   mowgli:
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
     restart: unless-stopped
