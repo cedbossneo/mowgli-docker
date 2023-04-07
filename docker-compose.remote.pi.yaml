@@ -26,7 +26,6 @@ services:
     environment:
       - ROS_MASTER_URI=http://10.0.0.111:11311
     command:
-      - /entrypoint.sh
       - /home/ubuntu/scripts/start_gps.sh
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro

@@ -35,7 +35,7 @@ ENV HOME=/home/ubuntu
 
 FROM base as deps
 
-RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/open_mower_ros
+RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/open_mower_ros && cd open_mower_ros && git checkout 592492f6091ba8cddcf1f36baaefca98e1e2541e
 
 # Checkout mowgli & fix repository commits
 RUN bash -c 'cd /home/ubuntu/open_mower_ros/ && git submodule update --init --recursive'

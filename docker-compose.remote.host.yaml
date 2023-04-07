@@ -26,7 +26,6 @@ services:
     command:
       - /opt/ros/noetic/bin/roscore
     volumes:
-      - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
     privileged: true
   openmower:
