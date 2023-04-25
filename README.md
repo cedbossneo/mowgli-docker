@@ -12,6 +12,14 @@ Install docker with this command :
 curl https://get.docker.com | sh
 ```
 
+Create a file in udev config (/etc/udev/rules.d/50-mowgli.rules) with this content :
+
+```
+SUBSYSTEM=="tty" ATTRS{product}=="Mowgli", SYMLINK+="mowgli"
+SUBSYSTEM=="tty" ATTRS{idVendor}=="1546" ATTRS{idProduct}=="01a9", SYMLINK+="gps"
+KERNEL=="ttyACM[0-9]*",MODE="0777"
+```
+
 Clone this repository
 
 ```bash
