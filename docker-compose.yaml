@@ -20,7 +20,6 @@ services:
   roscore:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
-    pull_policy: always
     tty: true
     restart: unless-stopped
     command:
@@ -32,7 +31,6 @@ services:
   rosserial:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
-    pull_policy: always
     tty: true
     restart: unless-stopped
     command:
@@ -51,7 +49,6 @@ services:
   openmower:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
-    pull_policy: always
     restart: unless-stopped
     tty: true
     volumes:
