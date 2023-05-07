@@ -30,6 +30,8 @@ The script suppose that your mowgli device is on /dev/mowgli and your gps on /de
 
 WARNING: This branch works only with the new Mowgli firmware https://github.com/cedbossneo/Mowgli that allows Mowgli to runs with vanilla OpenMower without mowgli_proxy or mowgli_blade.
 
+Edit the docker-compose file to set ROS_IP to you host machine ip address.
+
 Finally:
 
 ```bash
