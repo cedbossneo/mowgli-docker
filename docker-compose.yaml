@@ -39,6 +39,8 @@ services:
       - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
+    environment:
+      ROS_IP=your_ip_here
     volumes:
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
@@ -58,6 +60,8 @@ services:
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
+    environment:
+      ROS_IP=your_ip_here
     privileged: true
     depends_on:
       - rosserial
