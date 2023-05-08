@@ -8,6 +8,11 @@ services:
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://10.0.0.111:11311
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server

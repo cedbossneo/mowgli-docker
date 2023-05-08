@@ -33,6 +33,11 @@ services:
     network_mode: host
     tty: true
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
@@ -53,6 +58,11 @@ services:
     network_mode: host
     restart: unless-stopped
     tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro

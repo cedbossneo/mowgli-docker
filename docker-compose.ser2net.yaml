@@ -34,6 +34,11 @@ services:
     pull_policy: always
     tty: true
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
@@ -48,12 +53,17 @@ services:
       - roscore
       - gps-relay
       - mowgli-relay
-  mowgli:
+  openmower:
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
     restart: unless-stopped
     tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro

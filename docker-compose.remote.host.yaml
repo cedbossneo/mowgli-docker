@@ -34,6 +34,11 @@ services:
     pull_policy: always
     restart: unless-stopped
     tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
     environment:
       OM_NO_GPS: "True"
     volumes:

@@ -6,7 +6,7 @@ ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Add ROS repository
-RUN apt-get update && apt-get install -y curl git gnupg iproute2 sudo apt-utils
+RUN apt-get update && apt-get install -y curl git gnupg iproute2 sudo apt-utils sed
 RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
 
@@ -38,7 +38,10 @@ RUN mkdir -p /home/ubuntu/rosserial/src && cd /home/ubuntu/rosserial/src && git 
 USER root
 RUN bash -c 'source /opt/ros/noetic/setup.bash && cd /home/ubuntu/rosserial && catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/noetic install --only-pkg-with-deps rosserial_server'
 USER ubuntu
-RUN cd /home/ubuntu && git clone https://github.com/cedbossneo/open_mower_ros && cd open_mower_ros && git checkout 168398f878537095c6a8975782412c8c07786f91
+RUN cd /home/ubuntu && git clone https://github.com/ClemensElflein/open_mower_ros
+#Patching OM while waiting for PR https://github.com/ClemensElflein/open_mower_ros/pull/23 to be merged
+ADD patch.sh /home/ubuntu/patch.sh
+RUN /home/ubuntu/patch.sh
 
 # Checkout mowgli & fix repository commits
 RUN bash -c 'cd /home/ubuntu/open_mower_ros/ && git submodule update --init --recursive'
