@@ -7,7 +7,8 @@ services:
     tty: true
     restart: unless-stopped
     environment:
-      - ROS_MASTER_URI=http://10.0.0.111:11311
+      ROS_IP: ${MOWER_IP}
+      ROS_MASTER_URI: http://${ROS_IP}:11311
     logging:
       driver: "json-file"
       options:
@@ -29,7 +30,8 @@ services:
     restart: unless-stopped
     tty: true
     environment:
-      - ROS_MASTER_URI=http://10.0.0.111:11311
+      ROS_IP: ${MOWER_IP}
+      ROS_MASTER_URI: http://${ROS_IP}:11311
     command:
       - /home/ubuntu/scripts/start_gps.sh
     volumes:

@@ -23,6 +23,8 @@ services:
     pull_policy: always
     tty: true
     restart: unless-stopped
+    environment:
+      ROS_IP: ${ROS_IP}
     command:
       - /opt/ros/noetic/bin/roscore
     volumes:
@@ -41,6 +43,8 @@ services:
         max-size: 10m
     environment:
       OM_NO_GPS: "True"
+      ROS_IP: ${ROS_IP}
+      ROS_MASTER_URI: http://${ROS_IP}:11311
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro

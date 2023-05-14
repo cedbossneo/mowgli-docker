@@ -30,7 +30,7 @@ The script suppose that your mowgli device is on /dev/mowgli and your gps on /de
 
 WARNING: This branch works only with the new Mowgli firmware https://github.com/cedbossneo/Mowgli that allows Mowgli to runs with vanilla OpenMower without mowgli_proxy or mowgli_blade.
 
-Edit the docker-compose file to set ROS_IP to you host machine ip address.
+Edit the .env file to set ROS_IP to you host machine ip address.
 
 Finally:
 
@@ -79,16 +79,18 @@ Finally reboot your PI
 - Edit your Mowgli config in the config directory
 - Put your map in the ros directory.
 
+Edit the .env file to set your MOWER_IP to the ip of the mower AND the ROS_IP to the ip of the ros machine
+
 Finally, launch:
 
 ```bash
-MOWER_IP=your_mower_ip docker-compose -f docker-compose.ser2net.yaml up
+docker-compose -f docker-compose.ser2net.yaml up
 ```
 
 or, if you want to have it in deamon mode
 
 ```bash
-MOWER_IP=your_mower_ip docker-compose -f docker-compose.ser2net.yaml up -d
+docker-compose -f docker-compose.ser2net.yaml up -d
 ```
 
 That's it !
@@ -115,6 +117,8 @@ The script suppose that your mowgli device is on /dev/mowgli and your gps on /de
 
 WARNING: You must have the same mower_config on both pi and remote computer
 
+Edit the .env file to set your MOWER_IP to the ip of the mower AND the ROS_IP to the ip of the ros machine
+
 Finally:
 
 ```bash
@@ -135,6 +139,8 @@ Clone this repository
 git clone https://github.com/cedbossneo/mowgli-docker
 ```
 
+Edit the .env file to set your MOWER_IP to the ip of the mower AND the ROS_IP to the ip of the ros machine
+
 The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
 
 WARNING: You must have the same mower_config on both pi and remote computer
@@ -142,7 +148,7 @@ WARNING: You must have the same mower_config on both pi and remote computer
 Finally:
 
 ```bash
-HOST_IP=remote_host_ip docker-compose -f docker-compose.remote.pi.yaml up -d
+docker-compose -f docker-compose.remote.pi.yaml up -d
 ```
 
 ## Usage

@@ -23,6 +23,8 @@ services:
     pull_policy: always
     tty: true
     restart: unless-stopped
+    environment:
+      ROS_IP: ${ROS_IP}
     command:
       - /opt/ros/noetic/bin/roscore
     volumes:
@@ -34,6 +36,9 @@ services:
     pull_policy: always
     tty: true
     restart: unless-stopped
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
     logging:
       driver: "json-file"
       options:
@@ -59,6 +64,9 @@ services:
     pull_policy: always
     restart: unless-stopped
     tty: true
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
     logging:
       driver: "json-file"
       options:

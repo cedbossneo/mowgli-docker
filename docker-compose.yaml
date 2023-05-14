@@ -22,6 +22,8 @@ services:
     network_mode: host
     tty: true
     restart: unless-stopped
+    environment:
+      ROS_IP: ${ROS_IP}
     command:
       - /opt/ros/noetic/bin/roscore
     volumes:
@@ -38,6 +40,9 @@ services:
       options:
         max-file: "5"
         max-size: 10m
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
@@ -63,6 +68,9 @@ services:
       options:
         max-file: "5"
         max-size: 10m
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
     volumes:
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
@@ -70,8 +78,6 @@ services:
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
-    environment:
-      ROS_IP=your_ip_here
     privileged: true
     depends_on:
       - rosserial
