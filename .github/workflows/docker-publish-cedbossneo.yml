@@ -1,4 +1,4 @@
-name: Cedbossneo - AMD64
+name: Cedbossneo
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -28,8 +28,12 @@ jobs:
     strategy:
       matrix:
         runs-on: [ buildjet-4vcpu-ubuntu-2204, buildjet-4vcpu-ubuntu-2204-arm ]
-        tags: [ amd64, arm64]
-    name: Build - cedbossneo - ${{matrix.tags}}
+        include:
+          - tag: amd64
+            runs-on: buildjet-4vcpu-ubuntu-2204
+          - tag: arm64
+            runs-on: buildjet-4vcpu-ubuntu-2204-arm
+    name: Build - cedbossneo - ${{matrix.tag}}
     runs-on: ${{matrix.runs-on}}
     permissions:
       contents: read
@@ -53,16 +57,18 @@ jobs:
       - name: Get the output from CommitsWithinTime
         run: |
           echo "The 'has-new-commits-within-time' value is ${{ steps.commitswithintime.outputs.has-new-commits-within-time }}"
+          echo "The 'number-of-commits-within-time' value is ${{ steps.commitswithintime.outputs.number-of-commits-within-time }}"
+          echo "The 'total-commits' value is ${{ steps.commitswithintime.outputs.total-commits }}"
 
       - name: Checkout repository
-        if: steps.commitswithintime.outputs.has-new-commits-within-time
+        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true'
         uses: actions/checkout@v3
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        if: steps.commitswithintime.outputs.has-new-commits-within-time
+        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -73,7 +79,7 @@ jobs:
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        if: steps.commitswithintime.outputs.has-new-commits-within-time
+        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true'
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -82,10 +88,10 @@ jobs:
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
-        if: steps.commitswithintime.outputs.has-new-commits-within-time
+        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true'
         with:
           context: docker
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tags}}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
           labels: ${{ steps.meta.outputs.labels }}
 
