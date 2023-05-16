@@ -114,3 +114,6 @@ export OM_WHEEL_DISTANCE_M=0.325
 
 # Set default ticks/m
 export OM_WHEEL_TICKS_PER_M=300.0
+
+# Heatmap
+export OM_HEATMAP_SENSOR_IDS=UNSET
