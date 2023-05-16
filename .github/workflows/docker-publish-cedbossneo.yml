@@ -1,4 +1,4 @@
-name: Cedbossneo - ARM64
+name: Cedbossneo - AMD64
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -6,12 +6,15 @@ name: Cedbossneo - ARM64
 # documentation.
 
 on:
+  schedule:
+    - cron:  '30,0 * * * *'
   workflow_dispatch:
   push:
     branches: [ "cedbossneo" ]
     paths:
       - docker/**
-      - .github/workflows/docker-publish-arm64-cedbossneo.yaml
+      - .github/workflows/docker-publish-cedbossneo.yml
+
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -22,7 +25,12 @@ env:
 
 jobs:
   build:
-    runs-on: buildjet-4vcpu-ubuntu-2204-arm
+    strategy:
+      matrix:
+        runs-on: [ buildjet-4vcpu-ubuntu-2204, buildjet-4vcpu-ubuntu-2204-arm ]
+        tags: [ amd64, arm64]
+    name: Build - cedbossneo - ${{matrix.tags}}
+    runs-on: ${{matrix.runs-on}}
     permissions:
       contents: read
       packages: write
@@ -31,13 +39,30 @@ jobs:
       id-token: write
 
     steps:
+      - name: Checkout with maximum fetch depth
+        uses: actions/checkout@v3
+        with:
+          repository: ClemensElflein/open_mower_ros
+          ref: main
+      - name: Run CommitsWithinTime script
+        uses: AlexHolderDeveloper/CommitsWithinTime@v1.1.11
+        id: commitswithintime
+        with:
+          hours: 1
+      # Use the output from the `commitswithintime` step
+      - name: Get the output from CommitsWithinTime
+        run: |
+          echo "The 'has-new-commits-within-time' value is ${{ steps.commitswithintime.outputs.has-new-commits-within-time }}"
+
       - name: Checkout repository
+        if: steps.commitswithintime.outputs.has-new-commits-within-time
         uses: actions/checkout@v3
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        if: steps.commitswithintime.outputs.has-new-commits-within-time
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -48,6 +73,7 @@ jobs:
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        if: steps.commitswithintime.outputs.has-new-commits-within-time
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -56,9 +82,10 @@ jobs:
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
+        if: steps.commitswithintime.outputs.has-new-commits-within-time
         with:
           context: docker
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-arm64
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tags}}
           labels: ${{ steps.meta.outputs.labels }}
 
