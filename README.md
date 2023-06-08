@@ -6,13 +6,13 @@ This container runs OpenMower Mowgli software locally or remotely.
 
 ### Setup
 
-Install docker with this command :
+Install docker with this command:
 
 ```bash
 curl https://get.docker.com | sh
 ```
 
-Create a file in udev config (/etc/udev/rules.d/50-mowgli.rules) with this content :
+Create a file in udev config `/etc/udev/rules.d/50-mowgli.rules` with this content:
 
 ```
 SUBSYSTEM=="tty" ATTRS{product}=="Mowgli", SYMLINK+="mowgli"
@@ -26,11 +26,11 @@ Clone this repository
 git clone https://github.com/cedbossneo/mowgli-docker
 ```
 
-The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
+The script suppose that your mowgli device is on `/dev/mowgli` and your gps on `/dev/gps`
 
-WARNING: This branch works only with the new Mowgli firmware https://github.com/cedbossneo/Mowgli that allows Mowgli to runs with vanilla OpenMower without mowgli_proxy or mowgli_blade.
+⚠ WARNING: This branch works only with the new Mowgli firmware https://github.com/cedbossneo/Mowgli that allows Mowgli to runs with vanilla OpenMower without mowgli_proxy or mowgli_blade.
 
-Edit the .env file to set ROS_IP to you host machine ip address.
+Edit the `.env` file to set `ROS_IP` to you host machine ip address.
 
 Finally:
 
@@ -53,7 +53,7 @@ apt-get install -y ser2net
 systemctl enable ser2net
 ```
 
-Create a file in udev config (/etc/udev/rules.d/50-mowgli.rules) with this content :
+Create a file in udev config `/etc/udev/rules.d/50-mowgli.rules` with this content
 
 ```
 SUBSYSTEM=="tty" ATTRS{product}=="Mowgli", SYMLINK+="mowgli"
@@ -61,7 +61,7 @@ SUBSYSTEM=="tty" ATTRS{idVendor}=="1546" ATTRS{idProduct}=="01a9", SYMLINK+="gps
 KERNEL=="ttyACM[0-9]*",MODE="0777"
 ```
 
-Edit /etc/ser2net.conf and add theses lines on the bottom, change devices according to your setup
+Edit `/etc/ser2net.conf` and add theses lines on the bottom, change devices according to your setup
 
 ```
 # Mowgli
@@ -75,11 +75,11 @@ Finally reboot your PI
 #### Remote Machine
 
 - Clone this repository somewhere on your system.
-- Install Docker ( curl -sSL https://get.docker.com | sh )
+- Install Docker (`curl -sSL https://get.docker.com | sh`)
 - Edit your Mowgli config in the config directory
 - Put your map in the ros directory.
 
-Edit the .env file to set your MOWER_IP to the ip of the mower AND the ROS_IP to the ip of the ros machine
+Edit the `.env` file to set your `MOWER_IP` to the ip of the mower AND the `ROS_IP` to the ip of the ros machine
 
 Finally, launch:
 
@@ -101,7 +101,7 @@ That's it !
 
 #### Remote Host
 
-Install docker with this command :
+Install docker with this command:
 
 ```bash
 curl https://get.docker.com | sh
@@ -113,11 +113,11 @@ Clone this repository
 git clone https://github.com/cedbossneo/mowgli-docker
 ```
 
-The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
+The script suppose that your mowgli device is on `/dev/mowgli` and your gps on `/dev/gps`
 
-WARNING: You must have the same mower_config on both pi and remote computer
+⚠ WARNING: You must have the same `mower_config` on both pi and remote computer
 
-Edit the .env file to set your MOWER_IP to the ip of the mower AND the ROS_IP to the ip of the ros machine
+Edit the `.env` file to set your `MOWER_IP` to the ip of the mower AND the `ROS_IP` to the ip of the ros machine
 
 Finally:
 
@@ -139,11 +139,11 @@ Clone this repository
 git clone https://github.com/cedbossneo/mowgli-docker
 ```
 
-Edit the .env file to set your MOWER_IP to the ip of the mower AND the ROS_IP to the ip of the ros machine
+Edit the `.env` file to set your `MOWER_IP` to the ip of the mower AND the `ROS_IP` to the ip of the ros machine
 
-The script suppose that your mowgli device is on /dev/mowgli and your gps on /dev/gps
+The script suppose that your mowgli device is on `/dev/mowgli` and your gps on `/dev/gps`
 
-WARNING: You must have the same mower_config on both pi and remote computer
+⚠ WARNING: You must have the same `mower_config` on both pi and remote computer
 
 Finally:
 
@@ -165,7 +165,7 @@ docker-compose -f docker-compose.yaml logs -f openmower
 
 ### RViz
 
-ROS Ports are exposed to the host machine so you can easily access RViz by setting your ROS_MASTER_IP to the machine where your docker container runs.
+ROS Ports are exposed to the host machine so you can easily access RViz by setting your `ROS_MASTER_IP` to the machine where your docker container runs.
 
 ### Shutdown
 
