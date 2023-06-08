@@ -155,7 +155,7 @@ docker-compose -f docker-compose.remote.pi.yaml up -d
 
 ### Buttons
 
-You can use the scripts in buttons directory to press home / start
+You can use the scripts in [./utils/buttons](./utils/buttons) directory to press home / start
 
 ### Logs
 
