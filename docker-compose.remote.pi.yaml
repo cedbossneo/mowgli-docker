@@ -1,14 +1,13 @@
 version: '3'
 
 services:
+
   rosserial:
+    container_name: mowgli-rosserial
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
     tty: true
-    restart: unless-stopped
-    environment:
-      ROS_IP: ${MOWER_IP}
-      ROS_MASTER_URI: http://${ROS_IP}:11311
+    privileged: true
     logging:
       driver: "json-file"
       options:
@@ -20,24 +19,40 @@ services:
       - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /dev:/dev
-    privileged: true
-  gps:
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
-    network_mode: host
-    restart: unless-stopped
-    tty: true
     environment:
       ROS_IP: ${MOWER_IP}
       ROS_MASTER_URI: http://${ROS_IP}:11311
-    command:
-      - /home/ubuntu/scripts/start_gps.sh
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
+      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
     volumes:
-      - ./mower_params:/home/ubuntu/mower_params:ro
-      - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
-      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
+      - ./config/rosconsole.config:/config/rosconsole.config:ro
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
+    restart: unless-stopped
+
+  gps:
+    container_name: mowgli-gps
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
+    network_mode: host
+    tty: true
     privileged: true
+    command:
+      - /home/ubuntu/scripts/start_gps.sh
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
+      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
+    volumes:
+      - ./config/rosconsole.config:/config/rosconsole.config:ro
+      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
+      - ./mower_params:/home/ubuntu/mower_params:ro
+      - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /dev:/dev
+    restart: unless-stopped

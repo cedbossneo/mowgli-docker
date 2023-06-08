@@ -1,40 +1,52 @@
 version: '3'
 
 services:
+
   web:
+    container_name: mowgli-web
     image: nginx
-    restart: unless-stopped
     ports:
       - 4005:80
     volumes:
       - ./web:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
   mosquitto:
+    container_name: mowgli-mqtt
     hostname: mosquitto
     image: eclipse-mosquitto:latest
-    restart: always
+    ports:
+      - 1883:1883
+      - 9001:9001
     volumes:
       - ./config/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
-    ports:
-      - "1883:1883"
-      - 9001:9001
+    restart: unless-stopped
+
   roscore:
+    container_name: mowgli-roscore
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
     tty: true
-    restart: unless-stopped
-    environment:
-      ROS_IP: ${ROS_IP}
+    privileged: true
     command:
       - /opt/ros/noetic/bin/roscore
+    environment:
+      ROS_IP: ${ROS_IP}
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
+      ROSOUT_DISABLE_FILE_LOGGING: true
+    tmpfs: /home/ubuntu/.ros/log/
     volumes:
+      - ./config/rosconsole.config:/config/rosconsole.config:ro
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
-    privileged: true
+    restart: unless-stopped
+
   rosserial:
+    container_name: mowgli-rosserial
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
     tty: true
-    restart: unless-stopped
+    privileged: true
     logging:
       driver: "json-file"
       options:
@@ -43,24 +55,30 @@ services:
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
+      ROSOUT_DISABLE_FILE_LOGGING: true
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
       - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
+    tmpfs: /home/ubuntu/.ros/log/
     volumes:
+      - ./config/rosconsole.config:/config/rosconsole.config:ro
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
-    privileged: true
     depends_on:
       - roscore
+    restart: unless-stopped
+
   openmower:
+    container_name: mowgli-openmower
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
-    restart: unless-stopped
     tty: true
+    privileged: true
     logging:
       driver: "json-file"
       options:
@@ -69,13 +87,17 @@ services:
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
+      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
+    tmpfs: /home/ubuntu/.ros/log                          # comment this line out to enable persistent logs
     volumes:
+      - ./config/rosconsole.config:/config/rosconsole.config:ro
+      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
-      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
-    privileged: true
     depends_on:
       - rosserial
+    restart: unless-stopped
