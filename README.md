@@ -16,8 +16,10 @@ Create a file in udev config `/etc/udev/rules.d/50-mowgli.rules` with this conte
 
 ```
 SUBSYSTEM=="tty" ATTRS{product}=="Mowgli", SYMLINK+="mowgli"
+# simpleRTK USB
 SUBSYSTEM=="tty" ATTRS{idVendor}=="1546" ATTRS{idProduct}=="01a9", SYMLINK+="gps"
-KERNEL=="ttyACM[0-9]*",MODE="0777"
+# ESP USB CDC - RTK1010Board
+SUBSYSTEM=="tty" ATTRS{idVendor}=="303a" ATTRS{idProduct}=="4001", SYMLINK+="gps"
 ```
 
 Clone this repository
@@ -57,8 +59,10 @@ Create a file in udev config `/etc/udev/rules.d/50-mowgli.rules` with this conte
 
 ```
 SUBSYSTEM=="tty" ATTRS{product}=="Mowgli", SYMLINK+="mowgli"
+# simpleRTK USB
 SUBSYSTEM=="tty" ATTRS{idVendor}=="1546" ATTRS{idProduct}=="01a9", SYMLINK+="gps"
-KERNEL=="ttyACM[0-9]*",MODE="0777"
+# ESP USB CDC - RTK1010Board
+SUBSYSTEM=="tty" ATTRS{idVendor}=="303a" ATTRS{idProduct}=="4001", SYMLINK+="gps"
 ```
 
 Edit `/etc/ser2net.conf` and add theses lines on the bottom, change devices according to your setup
