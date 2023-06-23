@@ -65,9 +65,9 @@ Edit /etc/ser2net.conf and add theses lines on the bottom, change devices accord
 
 ```
 # Mowgli
-4001:raw:600:/dev/mowgli:115200 NONE 1STOPBIT 8DATABITS -RTSCTS
+4001:raw:600:/dev/mowgli:115200 NONE 1STOPBIT 8DATABITS
 # GPS
-4002:raw:600:/dev/gps:460800 NONE 1STOPBIT 8DATABITS -RTSCTS
+4002:raw:600:/dev/gps:460800 NONE 1STOPBIT 8DATABITS
 ```
 
 Finally reboot your PI
