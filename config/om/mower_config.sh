@@ -99,7 +99,7 @@ export OM_GPS_TIMEOUT_SEC=5.0
 export OM_ENABLE_MOWER=true
 
 # True to start mowing automatically. If this is false, you need to start manually by pressing the start button
-export OM_AUTOMATIC_START=false
+export OM_AUTOMATIC_MODE=0
 
 export OM_OUTLINE_OFFSET=0.05
 
