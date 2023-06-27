@@ -1,41 +1,49 @@
 version: '3'
 
 services:
+
   web:
+    container_name: mowgli-web
     image: nginx
-    restart: unless-stopped
     ports:
       - 4005:80
     volumes:
       - ./web:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
   mosquitto:
+    container_name: mowgli-mqtt
     hostname: mosquitto
     image: eclipse-mosquitto:latest
-    restart: always
+    ports:
+      - 1883:1883
+      - 9001:9001
     volumes:
       - ./config/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
-    ports:
-      - "1883:1883"
-      - 9001:9001
+    restart: unless-stopped
+
   roscore:
+    container_name: mowgli-roscore
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
     tty: true
-    restart: unless-stopped
+    privileged: true
     environment:
       ROS_IP: ${ROS_IP}
     command:
       - /opt/ros/noetic/bin/roscore
     volumes:
       - /etc/timezone:/etc/timezone:ro
-    privileged: true
+    restart: unless-stopped
+
   rosserial:
+    container_name: mowgli-rosserial
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
     tty: true
-    restart: unless-stopped
+    privileged: true
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
@@ -53,46 +61,54 @@ services:
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
-    privileged: true
     depends_on:
       - roscore
       - gps-relay
       - mowgli-relay
+    restart: unless-stopped
+
   openmower:
+    container_name: mowgli-openmower
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
     network_mode: host
     pull_policy: always
-    restart: unless-stopped
     tty: true
-    environment:
-      ROS_MASTER_URI: http://${ROS_IP}:11311
-      ROS_IP: ${ROS_IP}
+    privileged: true
     logging:
       driver: "json-file"
       options:
         max-file: "5"
         max-size: 10m
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
+      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
+    tmpfs: /home/ubuntu/.ros/log                          # comment this line out to enable persistent logs
     volumes:
+      - ./config/rosconsole.config:/config/rosconsole.config:ro
+      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
       - ./mower_params:/home/ubuntu/mower_params:ro
       - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
-      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
       - ./ros:/home/ubuntu/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
-    privileged: true
     depends_on:
       - rosserial
+    restart: unless-stopped
+
   gps-relay:
     image: alpine/socat
     command: "pty,link=/dev/gps,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4002"
-    restart: unless-stopped
     privileged: true
     volumes:
     - /dev:/dev
+    restart: unless-stopped
+
   mowgli-relay:
     image: alpine/socat
     command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4001"
-    restart: unless-stopped
     privileged: true
     volumes:
     - /dev:/dev
+    restart: unless-stopped
