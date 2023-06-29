@@ -19,7 +19,7 @@ RUN adduser ubuntu sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Add ubuntu user to required groups
-RUN usermod -aG input ubuntu
+RUN usermod -aG dialout ubuntu
 
 # Install required ROS packages
 RUN apt-get -y install g++ cpp cmake ros-noetic-tf2-eigen ros-noetic-teleop-twist-keyboard ros-noetic-robot-state-publisher ros-noetic-joint-state-publisher ros-noetic-map-server ros-noetic-gps-common picocom   ros-noetic-tf2-geometry-msgs ros-noetic-robot-localization libpigpiod-if-dev wavemon ros-noetic-rosserial-arduino python3-paho-mqtt openocd python3-rosdep ros-noetic-rtcm-msgs libxml2-utils python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
