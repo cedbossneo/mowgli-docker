@@ -6,6 +6,7 @@ services:
     container_name: mowgli-rosserial
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
+    #pull_policy: always
     tty: true
     privileged: true
     logging:
@@ -13,19 +14,22 @@ services:
       options:
         max-file: "5"
         max-size: 10m
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${MOWER_IP}
+      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
+      ROSOUT_DISABLE_FILE_LOGGING: true
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
       - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
-    environment:
-      ROS_IP: ${MOWER_IP}
-      ROS_MASTER_URI: http://${ROS_IP}:11311
-      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
-      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
+    tmpfs: /root/.ros/log/
     volumes:
-      - ./config/rosconsole.config:/config/rosconsole.config:ro
+      - ./config/om/rosconsole.config:/config/rosconsole.config:ro
+      - ./ros:/root/.ros/
+      - ./config/om:/config:ro
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     restart: unless-stopped
@@ -34,6 +38,7 @@ services:
     container_name: mowgli-gps
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
+    #pull_policy: always
     tty: true
     privileged: true
     command:
@@ -48,11 +53,12 @@ services:
       ROS_IP: ${ROS_IP}
       ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
       ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
+    tmpfs: /root/.ros/log                          # comment this line out to enable persistent logs
     volumes:
-      - ./config/rosconsole.config:/config/rosconsole.config:ro
-      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
-      - ./mower_params:/home/ubuntu/mower_params:ro
-      - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
+      - ./config/om:/config:ro
+      - ./mower_params:/root/mower_params:ro
+      - ./params:/opt/open_mower_ros/src/open_mower/params:ro
+      - ./ros:/root/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     restart: unless-stopped

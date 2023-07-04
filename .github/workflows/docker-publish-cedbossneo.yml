@@ -12,7 +12,7 @@ on:
   push:
     branches: [ "cedbossneo" ]
     paths:
-      - docker/**
+      - docker/openmower/**
       - .github/workflows/docker-publish-cedbossneo.yml
 
 
@@ -90,7 +90,7 @@ jobs:
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true'
         with:
-          context: docker
+          context: docker/openmower
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
           labels: ${{ steps.meta.outputs.labels }}

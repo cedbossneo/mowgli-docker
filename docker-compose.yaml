@@ -26,6 +26,7 @@ services:
     container_name: mowgli-roscore
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
+    #pull_policy: always
     tty: true
     privileged: true
     command:
@@ -34,10 +35,10 @@ services:
       ROS_IP: ${ROS_IP}
       ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
       ROSOUT_DISABLE_FILE_LOGGING: true
-    tmpfs: /home/ubuntu/.ros/log/
+    tmpfs: /root/.ros/log/
     volumes:
-      - ./config/rosconsole.config:/config/rosconsole.config:ro
-      - ./ros:/home/ubuntu/.ros/
+      - ./config/om/rosconsole.config:/config/rosconsole.config:ro
+      - ./ros:/root/.ros/
       - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
 
@@ -45,6 +46,7 @@ services:
     container_name: mowgli-rosserial
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
+    #pull_policy: always
     tty: true
     privileged: true
     logging:
@@ -63,10 +65,11 @@ services:
       - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
-    tmpfs: /home/ubuntu/.ros/log/
+    tmpfs: /root/.ros/log/
     volumes:
-      - ./config/rosconsole.config:/config/rosconsole.config:ro
-      - ./ros:/home/ubuntu/.ros/
+      - ./config/om/rosconsole.config:/config/rosconsole.config:ro
+      - ./ros:/root/.ros/
+      - ./config/om:/config:ro
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     depends_on:
@@ -77,6 +80,7 @@ services:
     container_name: mowgli-openmower
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
     network_mode: host
+    #pull_policy: always
     tty: true
     privileged: true
     logging:
@@ -89,13 +93,12 @@ services:
       ROS_IP: ${ROS_IP}
       ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
       ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
-    tmpfs: /home/ubuntu/.ros/log                          # comment this line out to enable persistent logs
+    tmpfs: /root/.ros/log                          # comment this line out to enable persistent logs
     volumes:
-      - ./config/rosconsole.config:/config/rosconsole.config:ro
-      - ./config/om:/home/ubuntu/open_mower_ros/src/open_mower/config:ro
-      - ./mower_params:/home/ubuntu/mower_params:ro
-      - ./params:/home/ubuntu/open_mower_ros/src/open_mower/params:ro
-      - ./ros:/home/ubuntu/.ros/
+      - ./config/om:/config:ro
+      - ./mower_params:/root/mower_params:ro
+      - ./params:/opt/open_mower_ros/src/open_mower/params:ro
+      - ./ros:/root/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     depends_on:
