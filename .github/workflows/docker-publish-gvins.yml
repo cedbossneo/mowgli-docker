@@ -67,6 +67,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
+          platforms: linux/${{ matrix.tag }}
           context: docker/gvins
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:gvins-${{matrix.tag}}

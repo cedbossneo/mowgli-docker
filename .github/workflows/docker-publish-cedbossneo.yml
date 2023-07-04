@@ -95,6 +95,7 @@ jobs:
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
+          platforms: linux/${{ matrix.tag }}
           context: docker/openmower
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
