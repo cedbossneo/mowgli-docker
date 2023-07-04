@@ -27,9 +27,8 @@ services:
       - _baud:=115200
     tmpfs: /root/.ros/log/
     volumes:
-      - ./config/om/rosconsole.config:/config/rosconsole.config:ro
-      - ./ros:/root/.ros/
       - ./config/om:/config:ro
+      - ./ros:/root/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     restart: unless-stopped

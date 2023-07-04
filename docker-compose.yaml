@@ -37,7 +37,7 @@ services:
       ROSOUT_DISABLE_FILE_LOGGING: true
     tmpfs: /root/.ros/log/
     volumes:
-      - ./config/om/rosconsole.config:/config/rosconsole.config:ro
+      - ./config/om:/config:ro
       - ./ros:/root/.ros/
       - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
@@ -67,7 +67,6 @@ services:
       - _baud:=115200
     tmpfs: /root/.ros/log/
     volumes:
-      - ./config/om/rosconsole.config:/config/rosconsole.config:ro
       - ./ros:/root/.ros/
       - ./config/om:/config:ro
       - /etc/timezone:/etc/timezone:ro

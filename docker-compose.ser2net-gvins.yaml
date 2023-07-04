@@ -90,6 +90,7 @@ services:
         max-file: "5"
         max-size: 10m
     environment:
+      OM_NO_GPS: "True"
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
       ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
@@ -121,3 +122,25 @@ services:
     volumes:
     - /dev:/dev
     restart: unless-stopped
+
+  gvins:
+    image: ghcr.io/cedbossneo/mowgli-docker:gvins
+    privileged: true
+    network_mode: host
+    pull_policy: always
+    volumes:
+    - ./config/gvins:/root/catkin_ws/src/GVINS/config/visensor_f9p:ro
+    - ./config/gvins:/root/catkin_ws/src/ublox_driver/config:ro
+    - ./docker/gvins:/root/catkin_ws/launch
+    - /dev:/dev
+    restart: unless-stopped
+    depends_on:
+      - roscore
+    command:
+      - roslaunch
+      - /root/catkin_ws/launch/gvins.launch
+
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
+    

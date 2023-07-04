@@ -1,0 +1,6 @@
+<launch>
+    
+    <include file="$(find ublox_driver)/launch/ublox_driver.launch"/>
+    <include file="$(find gvins)/launch/visensor_f9p.launch"/>    
+
+</launch>
