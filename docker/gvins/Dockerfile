@@ -44,7 +44,7 @@ RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
       git clone https://github.com/HKUST-Aerial-Robotics/ublox_driver.git 
 
 # Copy the local replica of GVINS
-RUN git clone https://github.com/cedbossneo/GVINS.git
+RUN cd $CATKIN_WS/src && git clone https://github.com/cedbossneo/GVINS.git
 
 ADD gvins.launch /root/catkin_ws/launch/gvins.launch
 
