@@ -48,32 +48,22 @@ jobs:
       id-token: write
 
     steps:
-      - name: Checkout with maximum fetch depth
-        uses: actions/checkout@v3
+      - name: Check if update available
+        id: check
+        uses: lucacome/docker-image-update-checker@v1
         with:
-          repository: ClemensElflein/open_mower_ros
-          ref: main
-      - name: Run CommitsWithinTime script
-        uses: AlexHolderDeveloper/CommitsWithinTime@v1.1.11
-        id: commitswithintime
-        with:
-          hours: 1
-      # Use the output from the `commitswithintime` step
-      - name: Get the output from CommitsWithinTime
-        run: |
-          echo "The 'has-new-commits-within-time' value is ${{ steps.commitswithintime.outputs.has-new-commits-within-time }}"
-          echo "The 'number-of-commits-within-time' value is ${{ steps.commitswithintime.outputs.number-of-commits-within-time }}"
-          echo "The 'total-commits' value is ${{ steps.commitswithintime.outputs.total-commits }}"
+          base-image: ghcr.io/clemenselflein/open_mower_ros:main
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
 
       - name: Checkout repository
-        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true' || github.event.inputs.ignoreCommits == 'y'
+        if: steps.check.outputs.needs-updating == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: actions/checkout@v3
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true' || github.event.inputs.ignoreCommits == 'y'
+        if: steps.check.outputs.needs-updating == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -84,7 +74,7 @@ jobs:
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true' || github.event.inputs.ignoreCommits == 'y'
+        if: steps.check.outputs.needs-updating == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -93,7 +83,7 @@ jobs:
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
-        if: steps.commitswithintime.outputs.has-new-commits-within-time == 'true' || github.event.inputs.ignoreCommits == 'y'
+        if: steps.check.outputs.needs-updating == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           platforms: linux/${{ matrix.tag }}
           context: docker/openmower

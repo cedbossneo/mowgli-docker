@@ -2,13 +2,13 @@
 
 #common parameters
 imu_topic: "/imu/data_raw"
-image_topic: "/gopro_5/gp_live"
+image_topic: "/usb_cam/image_raw"
 output_dir: "~/output/"
 
 #camera calibration 
 model_type: MEI
 camera_name: camera
-image_width: 752
+image_width: 640
 image_height: 480
 mirror_parameters:
    xi: 1.8476540167437447
@@ -47,7 +47,7 @@ gnss_iono_default_parameters: !!opencv-matrix
           0.1249E+06, -0.4424E+06,  0.1507E+07, -0.2621E+06]
 
 # Extrinsic parameter between IMU and Camera.
-estimate_extrinsic: 2   # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
+estimate_extrinsic: 0   # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
                         # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.
                         # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        
 #If you choose 0 or 1, you should write down the following matrix.

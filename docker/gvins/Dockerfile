@@ -15,6 +15,7 @@ RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
       libgoogle-glog-dev \
       libsuitesparse-dev \
       python3-catkin-tools \
+      ros-${ROS_DISTRO}-usb-cam \
       ros-${ROS_DISTRO}-cv-bridge \
       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters \
@@ -35,8 +36,8 @@ RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
       cmake .. && \
       make -j$(USE_PROC) install && \
       cd ../.. && rm -rf ceres-solver && \
+      mkdir -p /root/catkin_ws/src && \
       # create GVINS directory
-      mkdir -p $CATKIN_WS/src/GVINS/ && \
       cd $CATKIN_WS/src && \
       # clone gnss_comm repo
       git clone https://github.com/HKUST-Aerial-Robotics/gnss_comm.git && \
@@ -44,8 +45,7 @@ RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
       git clone https://github.com/HKUST-Aerial-Robotics/ublox_driver.git 
 
 # Copy the local replica of GVINS
-RUN cd $CATKIN_WS/src && git clone https://github.com/cedbossneo/GVINS.git
-
+RUN cd $CATKIN_WS/src && git clone https://github.com/unibz-first/gvins.git && cd gvins && git checkout origin/noetic-devel
 ADD gvins.launch /root/catkin_ws/launch/gvins.launch
 
 # Build GVINS

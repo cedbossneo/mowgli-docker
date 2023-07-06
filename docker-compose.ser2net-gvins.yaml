@@ -57,8 +57,8 @@ services:
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
-      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
-      ROSOUT_DISABLE_FILE_LOGGING: true
+#      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
+#      ROSOUT_DISABLE_FILE_LOGGING: true
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
@@ -129,18 +129,26 @@ services:
     network_mode: host
     pull_policy: always
     volumes:
-    - ./config/gvins:/root/catkin_ws/src/GVINS/config/visensor_f9p:ro
+    - ./config/gvins:/root/catkin_ws/src/gvins/config/visensor_f9p:ro
     - ./config/gvins:/root/catkin_ws/src/ublox_driver/config:ro
+    - ./model:/root/catkin_ws/model
     - ./docker/gvins:/root/catkin_ws/launch
     - /dev:/dev
     restart: unless-stopped
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
     depends_on:
       - roscore
     command:
       - roslaunch
+      - --wait
       - /root/catkin_ws/launch/gvins.launch
 
-    environment:
-      ROS_MASTER_URI: http://${ROS_IP}:11311
-      ROS_IP: ${ROS_IP}
-    
+#  gopro:
+#    image: ghcr.io/cedbossneo/mowgli-docker:gopro
+#    restart: unless-stopped
+#    network_mode: host
+#    environment:
+#      ROS_MASTER_URI: http://${ROS_IP}:11311
+#      ROS_IP: ${ROS_IP}
