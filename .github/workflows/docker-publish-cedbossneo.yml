@@ -48,17 +48,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Check if update available
-        id: check
-        uses: lucacome/docker-image-update-checker@v1
-        with:
-          base-image: ghcr.io/clemenselflein/open_mower_ros:main
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
-
-      - name: Checkout repository
-        if: steps.check.outputs.needs-updating == 'true' || github.event.inputs.ignoreCommits == 'y'
-        uses: actions/checkout@v3
-
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
@@ -67,7 +56,20 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.SECRET_TOKEN }}
+
+      - name: Check if update available
+        id: check
+        uses: mkumatag/container-image-updater-action@v1.0.5
+        with:
+          base-image: ghcr.io/clemenselflein/open_mower_ros:main
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
+          platforms: linux/${{ matrix.tag }}
+          image-reg-username: ${{ github.actor }}
+          image-reg-password: ${{ secrets.SECRET_TOKEN }}
+      - name: Checkout repository
+        if: steps.check.outputs.needs-updating == 'true' || github.event.inputs.ignoreCommits == 'y'
+        uses: actions/checkout@v3
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
