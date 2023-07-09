@@ -4,7 +4,7 @@ services:
 
   rosserial:
     container_name: mowgli-rosserial
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
     #pull_policy: always
     tty: true
@@ -35,7 +35,7 @@ services:
 
   gps:
     container_name: mowgli-gps
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-arm64
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
     #pull_policy: always
     tty: true

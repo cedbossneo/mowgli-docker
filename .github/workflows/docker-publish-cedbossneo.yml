@@ -6,8 +6,8 @@ name: Cedbossneo
 # documentation.
 
 on:
-  schedule:
-    - cron:  '30,0 * * * *'
+  #schedule:
+  #  - cron:  '30,0 * * * *'
   workflow_dispatch:
     inputs:
       ignoreCommits:
@@ -58,7 +58,7 @@ jobs:
         uses: cedbossneo/container-image-updater-action@v1.0.8
         with:
           base-image: ghcr.io/clemenselflein/open_mower_ros:main
-          image: ${{ env.REGISTRY_IMAGE }}:cedbossneo-${{matrix.tag}}
+          image: ${{ env.REGISTRY_IMAGE }}:cedbossneo
           platform: linux/${{ matrix.tag }}
           image-reg-username: ${{ github.actor }}
           image-reg-password: ${{ secrets.SECRET_TOKEN }}

@@ -24,7 +24,7 @@ services:
 
   roscore:
     container_name: mowgli-roscore
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
     #pull_policy: always
     tty: true
@@ -44,7 +44,7 @@ services:
 
   rosserial:
     container_name: mowgli-rosserial
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
     #pull_policy: always
     tty: true
@@ -79,7 +79,7 @@ services:
 
   openmower:
     container_name: mowgli-openmower
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo-amd64
+    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
     #pull_policy: always
     tty: true
