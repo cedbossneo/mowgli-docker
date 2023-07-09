@@ -60,11 +60,11 @@ jobs:
 
       - name: Check if update available
         id: check
-        uses: mkumatag/container-image-updater-action@v1.0.5
+        uses: cedbossneo/container-image-updater-action@v1.0.8
         with:
           base-image: ghcr.io/clemenselflein/open_mower_ros:main
           image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cedbossneo-${{matrix.tag}}
-          platforms: linux/${{ matrix.tag }}
+          platform: linux/${{ matrix.tag }}
           image-reg-username: ${{ github.actor }}
           image-reg-password: ${{ secrets.SECRET_TOKEN }}
       - name: Checkout repository
