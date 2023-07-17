@@ -40,6 +40,8 @@ Finally:
 docker-compose up -d
 ```
 
+The Mowgli GUI is hosted on port 4006 of your PI.
+
 The OpenMower web app is hosted on port 4005 of your PI.
 
 ## Remote BY Serial Redirection
@@ -159,7 +161,7 @@ docker-compose -f docker-compose.remote.pi.yaml up -d
 
 ### Buttons
 
-You can use the scripts in [./utils/buttons](./utils/buttons) directory to press home / start
+You can use the scripts in [./utils](./utils) directory to press home / start
 
 ### Logs
 
