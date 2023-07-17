@@ -8,8 +8,11 @@ services:
       - 4006:8080
     restart: unless-stopped
     environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
       MOWER_CONFIG_FILE: /config/mower_config.sh
       DOCKER_HOST: unix:///var/run/docker.sock
+    depends_on:
+      - roscore
     volumes:
       - ./config/om:/config
       - /var/run/docker.sock:/var/run/docker.sock
