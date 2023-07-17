@@ -26,14 +26,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ buildjet-4vcpu-ubuntu-2204, buildjet-16vcpu-ubuntu-2204-arm ]
-        include:
-          - tag: amd64
-            runs-on: buildjet-4vcpu-ubuntu-2204
-          - tag: arm64
-            runs-on: buildjet-16vcpu-ubuntu-2204-arm
-    name: Build - gvins - ${{matrix.tag}}
-    runs-on: ${{matrix.runs-on}}
+        arch: [ linux/arm64 , linux/amd64 ]
+    name: Build - gvins - ${{matrix.arch}}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -54,6 +49,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.SECRET_TOKEN }}
 
+      - name: Set up QEMU (arm64)
+        if: runner.arch != 'arm64'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+      - name: Set up QEMU (x64)
+        if: runner.arch != 'x64'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: amd64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -64,7 +69,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v4
         with:
-          platforms: linux/${{ matrix.tag }}
+          platforms: ${{ matrix.arch }}
           context: docker/gvins
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 

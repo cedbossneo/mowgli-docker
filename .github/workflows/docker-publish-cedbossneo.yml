@@ -35,14 +35,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ buildjet-4vcpu-ubuntu-2204, buildjet-4vcpu-ubuntu-2204-arm ]
-        include:
-          - tag: amd64
-            runs-on: buildjet-4vcpu-ubuntu-2204
-          - tag: arm64
-            runs-on: buildjet-4vcpu-ubuntu-2204-arm
-    name: Build - cedbossneo - ${{matrix.tag}}
-    runs-on: ${{matrix.runs-on}}
+        arch: [ linux/arm64 , linux/amd64 ]
+    name: Build - cedbossneo - ${{matrix.arch}}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -59,7 +54,7 @@ jobs:
         with:
           base-image: ghcr.io/clemenselflein/open_mower_ros:main
           image: ${{ env.REGISTRY_IMAGE }}:cedbossneo
-          platform: linux/${{ matrix.tag }}
+          platform: ${{ matrix.arch }}
           image-reg-username: ${{ github.actor }}
           image-reg-password: ${{ secrets.SECRET_TOKEN }}
       
@@ -70,6 +65,18 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.SECRET_TOKEN }}
+
+      # https://github.com/docker/setup-qemu-action
+      - name: Set up QEMU (arm64)
+        if: runner.arch != 'arm64'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
+      - name: Set up QEMU (x64)
+        if: runner.arch != 'x64'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: amd64
 
       - name: Checkout repository
         if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
@@ -95,7 +102,7 @@ jobs:
         uses: docker/build-push-action@v4
         if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
-          platforms: linux/${{ matrix.tag }}
+          platforms: ${{ matrix.arch }}
           context: docker/openmower
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
