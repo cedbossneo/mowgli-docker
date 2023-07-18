@@ -4,10 +4,10 @@ services:
   gui:
     container_name: mowgli-gui
     image: ghcr.io/cedbossneo/mowgli-gui:master
-    ports:
-      - 4006:8080
     restart: unless-stopped
+    network_mode: host
     environment:
+      ROS_IP: ${ROS_IP}
       ROS_MASTER_URI: http://${ROS_IP}:11311
       MOWER_CONFIG_FILE: /config/mower_config.sh
       DOCKER_HOST: unix:///var/run/docker.sock
