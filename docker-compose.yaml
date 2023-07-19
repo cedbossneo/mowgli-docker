@@ -3,6 +3,9 @@ version: '3'
 services:
   gui:
     container_name: mowgli-gui
+    labels:
+      project: mowgli
+      app: gui
     image: ghcr.io/cedbossneo/mowgli-gui:master
     restart: unless-stopped
     network_mode: host
