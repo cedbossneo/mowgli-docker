@@ -20,6 +20,9 @@ on:
       - docker/openmower/**
       - .github/workflows/docker-publish-cedbossneo.yml
 
+# permissions are needed if pushing to ghcr.io
+permissions:
+  packages: write
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -56,7 +59,7 @@ jobs:
           image: ${{ env.REGISTRY_IMAGE }}:cedbossneo
           platform: ${{ matrix.arch }}
           image-reg-username: ${{ github.actor }}
-          image-reg-password: ${{ secrets.SECRET_TOKEN }}
+          image-reg-password: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v2
@@ -64,7 +67,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.SECRET_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU (arm64)
@@ -147,7 +150,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.SECRET_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create manifest list and push
         working-directory: /tmp/digests
         if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'

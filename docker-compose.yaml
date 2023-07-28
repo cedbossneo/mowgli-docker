@@ -2,11 +2,11 @@ version: '3'
 
 services:
   gui:
-    container_name: mowgli-gui
+    container_name: openmower-gui
     labels:
-      project: mowgli
+      project: openmower
       app: gui
-    image: ghcr.io/cedbossneo/mowgli-gui:master
+    image: ghcr.io/cedbossneo/openmower-gui:master
     restart: unless-stopped
     network_mode: host
     environment:
@@ -22,7 +22,7 @@ services:
   web:
     container_name: mowgli-web
     labels:
-      project: mowgli
+      project: openmower
       app: web
     image: nginx
     ports:
@@ -34,7 +34,7 @@ services:
   mosquitto:
     container_name: mowgli-mqtt
     labels:
-      project: mowgli
+      project: openmower
       app: mqtt
     hostname: mosquitto
     image: eclipse-mosquitto:latest
@@ -48,7 +48,7 @@ services:
   roscore:
     container_name: mowgli-roscore
     labels:
-      project: mowgli
+      project: openmower
       app: roscore
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
@@ -71,7 +71,7 @@ services:
   rosserial:
     container_name: mowgli-rosserial
     labels:
-      project: mowgli
+      project: openmower
       app: rosserial
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
@@ -107,7 +107,7 @@ services:
   openmower:
     container_name: mowgli-openmower
     labels:
-      project: mowgli
+      project: openmower
       app: openmower
     image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
     network_mode: host
