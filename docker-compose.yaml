@@ -9,6 +9,7 @@ services:
     image: ghcr.io/cedbossneo/openmower-gui:master
     restart: unless-stopped
     network_mode: host
+    privileged: true
     environment:
       ROS_IP: ${ROS_IP}
       ROS_MASTER_URI: http://${ROS_IP}:11311
@@ -17,6 +18,7 @@ services:
     depends_on:
       - roscore
     volumes:
+      - /dev:/dev
       - ./config/om:/config
       - /var/run/docker.sock:/var/run/docker.sock
   web:
