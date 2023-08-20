@@ -1,9 +1,14 @@
 version: '3'
 
 services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   gui:
     container_name: openmower-gui
     labels:
+      "com.centurylinklabs.watchtower.enable": true
       project: openmower
       app: gui
     image: ghcr.io/cedbossneo/openmower-gui:master
