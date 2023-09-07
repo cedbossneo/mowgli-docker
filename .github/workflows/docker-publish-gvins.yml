@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-       runs-on: [ buildjet-4vcpu-ubuntu-2204, buildjet-16vcpu-ubuntu-2204-arm ]
+        runs-on: [ buildjet-4vcpu-ubuntu-2204, buildjet-16vcpu-ubuntu-2204-arm ]
         include:
           - tag: amd64
             runs-on: buildjet-4vcpu-ubuntu-2204
