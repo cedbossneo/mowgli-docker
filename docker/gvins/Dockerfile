@@ -16,6 +16,7 @@ RUN   if [ "x$(nproc)" = "x1" ] ; then export USE_PROC=1 ; \
       libsuitesparse-dev \
       python3-catkin-tools \
       ros-${ROS_DISTRO}-usb-cam \
+      ros-${ROS_DISTRO}-cv-camera \
       ros-${ROS_DISTRO}-cv-bridge \
       ros-${ROS_DISTRO}-image-transport \
       ros-${ROS_DISTRO}-message-filters \
