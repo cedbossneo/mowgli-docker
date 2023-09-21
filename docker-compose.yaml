@@ -6,6 +6,11 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: 'true'   # cleanup old openmower-gui images
+      WATCHTOWER_POLL_INTERVAL: 14400   # update check intervall in seconds - eg 14400 = 4h
+      WATCHTOWER_DEBUG: 'false'
+      WATCHTOWER_LABEL_ENABLE: 'true'
   gui:
     container_name: openmower-gui
     labels:
