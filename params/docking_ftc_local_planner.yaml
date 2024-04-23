@@ -2,6 +2,7 @@ DockingFTCPlanner:
   acceleration: 0.05
   debug_pid: false
   forward_only: false
+  check_obstacles: false
   goal_timeout: 20.0
   kd_ang: 0.0
   kd_lat: 0.0
@@ -17,7 +18,7 @@ DockingFTCPlanner:
   kp_lon: 4.0
   max_cmd_vel_ang: 0.5
   max_cmd_vel_speed: 0.2
-  max_follow_distance: 0.5
+  max_follow_distance: 1.0
   max_goal_angle_error: 10.0
   max_goal_distance_error: 0.1
   restore_defaults: false
