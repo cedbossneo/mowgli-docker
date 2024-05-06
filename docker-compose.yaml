@@ -26,10 +26,12 @@ services:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       MOWER_CONFIG_FILE: /config/mower_config.sh
       DOCKER_HOST: unix:///var/run/docker.sock
+      DB_PATH: /db
     depends_on:
       - roscore
     volumes:
       - /dev:/dev
+      - ./config/db:/db
       - ./config/om:/config
       - /var/run/docker.sock:/var/run/docker.sock
   web:
