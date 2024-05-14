@@ -65,7 +65,7 @@ services:
     labels:
       project: openmower
       app: roscore
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ${IMAGE}
     network_mode: host
     #pull_policy: always
     tty: true
@@ -88,7 +88,7 @@ services:
     labels:
       project: openmower
       app: rosserial
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ${IMAGE}
     network_mode: host
     #pull_policy: always
     tty: true
@@ -124,7 +124,7 @@ services:
     labels:
       project: openmower
       app: openmower
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ${IMAGE}
     network_mode: host
     #pull_policy: always
     tty: true

@@ -1,4 +1,4 @@
-name: Cedbossneo
+name: Custom
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -9,16 +9,11 @@ on:
   schedule:
     - cron:  '30,0 * * * *'
   workflow_dispatch:
-    inputs:
-      ignoreCommits:
-        description: 'Ignore commits (y/n)?'
-        required: true
-        default: 'y'
   push:
     branches: [ "cedbossneo" ]
     paths:
-      - docker/openmower/**
-      - .github/workflows/docker-publish-cedbossneo.yml
+      - docker/openmower_custom/**
+      - .github/workflows/docker-publish-custom.yml
 
 # permissions are needed if pushing to ghcr.io
 permissions:
@@ -39,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         arch: [ linux/arm64 , linux/amd64 ]
-    name: Build - cedbossneo - ${{matrix.arch}}
+    name: Build - custom - ${{matrix.arch}}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -51,19 +46,8 @@ jobs:
     steps:
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
-      - name: Check if update available
-        id: check
-        uses: cedbossneo/container-image-updater-action@v1.0.8
-        with:
-          base-image: ghcr.io/clemenselflein/open_mower_ros:main
-          image: ${{ env.REGISTRY_IMAGE }}:cedbossneo
-          platform: ${{ matrix.arch }}
-          image-reg-username: ${{ github.actor }}
-          image-reg-password: ${{ secrets.GITHUB_TOKEN }}
-      
       - name: Log into registry ${{ env.REGISTRY }}
         uses: docker/login-action@v2
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -82,7 +66,6 @@ jobs:
           platforms: amd64
 
       - name: Checkout repository
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: actions/checkout@v3
 
       # Extract metadata (tags, labels) for Docker
@@ -90,12 +73,10 @@ jobs:
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v4
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           images: ${{ env.REGISTRY_IMAGE }}
 
       - name: Set up Docker Buildx
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: docker/setup-buildx-action@v2
 
           # Build and push Docker image with Buildx (don't push on PR)
@@ -103,21 +84,18 @@ jobs:
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v4
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           platforms: ${{ matrix.arch }}
-          context: docker/openmower
+          context: docker/openmower_custom
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Export digest
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build-and-push.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
       - name: Upload digest
-        if: steps.check.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: actions/upload-artifact@v3
         with:
           name: digests
@@ -130,34 +108,28 @@ jobs:
       - build
     steps:
       - name: Download digests
-        if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: actions/download-artifact@v3
         with:
           name: digests
           path: /tmp/digests
       - name: Set up Docker Buildx
-        if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: docker/setup-buildx-action@v2
       - name: Docker meta
         id: meta
-        if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY_IMAGE }}
       - name: Login to Docker Hub
         uses: docker/login-action@v2
-        if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create manifest list and push
         working-directory: /tmp/digests
-        if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create ${{ env.REGISTRY_IMAGE }}:custom \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
       - name: Inspect image
-        if: needs.build.outputs.needs-update == 'true' || github.event.inputs.ignoreCommits == 'y'
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:main
