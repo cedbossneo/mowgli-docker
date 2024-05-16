@@ -6,8 +6,6 @@ name: Main
 # documentation.
 
 on:
-  schedule:
-    - cron:  '30,0 * * * *'
   workflow_dispatch:
   push:
     branches: [ "cedbossneo" ]
