@@ -6,8 +6,6 @@ name: Custom
 # documentation.
 
 on:
-  schedule:
-    - cron:  '30,0 * * * *'
   workflow_dispatch:
   push:
     branches: [ "cedbossneo" ]
@@ -128,7 +126,7 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create ${{ env.REGISTRY_IMAGE }}:custom \
+          docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:custom \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
       - name: Inspect image
         run: |

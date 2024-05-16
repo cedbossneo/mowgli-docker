@@ -126,9 +126,9 @@ jobs:
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create ${{ env.REGISTRY_IMAGE }}:cedbossneo \
+          docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:cedbossneo \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
-          docker buildx imagetools create ${{ env.REGISTRY_IMAGE }}:main \
+          docker buildx imagetools create -t ${{ env.REGISTRY_IMAGE }}:main \
             $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
       - name: Inspect image
         run: |
