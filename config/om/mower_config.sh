@@ -93,6 +93,9 @@ export OM_MOWING_MOTOR_TEMP_LOW=40.0
 
 export OM_GPS_WAIT_TIME_SEC=10.0
 export OM_GPS_TIMEOUT_SEC=5.0
+export OM_GPS_PORT=/dev/gps
+export OM_GPS_BAUDRATE=921600
+
 
 # Mowing Behavior Settings
 # True to enable mowing motor

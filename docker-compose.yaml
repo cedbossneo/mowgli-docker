@@ -6,6 +6,11 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: 'true'   # cleanup old openmower-gui images
+      WATCHTOWER_POLL_INTERVAL: 14400   # update check intervall in seconds - eg 14400 = 4h
+      WATCHTOWER_DEBUG: 'false'
+      WATCHTOWER_LABEL_ENABLE: 'true'
   gui:
     container_name: openmower-gui
     labels:
@@ -21,10 +26,12 @@ services:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       MOWER_CONFIG_FILE: /config/mower_config.sh
       DOCKER_HOST: unix:///var/run/docker.sock
+      DB_PATH: /db
     depends_on:
       - roscore
     volumes:
       - /dev:/dev
+      - ./config/db:/db
       - ./config/om:/config
       - /var/run/docker.sock:/var/run/docker.sock
   web:
@@ -58,7 +65,7 @@ services:
     labels:
       project: openmower
       app: roscore
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ${IMAGE}
     network_mode: host
     #pull_policy: always
     tty: true
@@ -81,7 +88,7 @@ services:
     labels:
       project: openmower
       app: rosserial
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ${IMAGE}
     network_mode: host
     #pull_policy: always
     tty: true
@@ -117,7 +124,7 @@ services:
     labels:
       project: openmower
       app: openmower
-    image: ghcr.io/cedbossneo/mowgli-docker:cedbossneo
+    image: ${IMAGE}
     network_mode: host
     #pull_policy: always
     tty: true
