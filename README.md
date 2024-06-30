@@ -2,7 +2,7 @@
 
 This container runs OpenMower Mowgli software locally or remotely.
 
-For an example of wiring mowgli on a yardforce mower take a look at [this diagram.](https://app.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=yardforce_wiring.drawio#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fkevinmce%2Fmowgli-docker%2Fcedbossneo%2Fdiagrams%2Fyardforce_wiring.drawio)
+For an example of wiring mowgli on a yardforce mower, take a look at [this diagram.](https://app.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=yardforce_wiring.drawio#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fkevinmce%2Fmowgli-docker%2Fcedbossneo%2Fdiagrams%2Fyardforce_wiring.drawio)
 
 ## Local
 
