@@ -49,7 +49,7 @@ export OM_DATUM_LONG=2.1661984
 # export OM_DATUM_LONG=11.575605219552623
 
 # GPS protocol. Use UBX for u-blox chipsets and NMEA for everything else
-export OM_GPS_PROTOCOL=UBX
+export OM_GPS_PROTOCOL=NMEA
 
 # NTRIP Settings
 # Set to False if using external radio plugged into the Ardusimple board.
@@ -93,7 +93,7 @@ export OM_MOWING_MOTOR_TEMP_LOW=40.0
 
 export OM_GPS_WAIT_TIME_SEC=10.0
 export OM_GPS_TIMEOUT_SEC=5.0
-export OM_GPS_PORT=/dev/gps
+export OM_GPS_PORT=/dev/ttyUSB0
 export OM_GPS_BAUDRATE=921600
 
 
@@ -106,7 +106,7 @@ export OM_AUTOMATIC_MODE=0
 
 export OM_OUTLINE_OFFSET=0.05
 
-export OM_NO_COMMS=false
+export OM_NO_COMMS=true
 
 # Set default GPS antenna offset
 export OM_ANTENNA_OFFSET_X=0.3
