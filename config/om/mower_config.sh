@@ -43,8 +43,8 @@ export OM_USE_RELATIVE_POSITION=False
 
 # If needed, uncomment and set to coordinates near you (these default coordinates are somewhere in Germany).
 # This will be your map origin!
-export OM_DATUM_LAT=48.8831951
-export OM_DATUM_LONG=2.1661984
+export OM_DATUM_LAT=47.407875891829
+export OM_DATUM_LONG=0.70576143550359
 # export OM_DATUM_LAT=48.13724720055111
 # export OM_DATUM_LONG=11.575605219552623
 
@@ -58,7 +58,7 @@ export OM_NTRIP_HOSTNAME=caster.centipede.fr
 export OM_NTRIP_PORT=2101
 export OM_NTRIP_USER=centipede
 export OM_NTRIP_PASSWORD=centipede
-export OM_NTRIP_ENDPOINT=OUIL
+export OM_NTRIP_ENDPOINT=DID37
 
 # If you want to use F9R's sensor fusion, set this to true (you will also need to set DATUM_LAT and DATUM_LONG.
 # Consider this option unstable, since I don't have the F9R anymore, so I'm not able to test this.
@@ -91,10 +91,10 @@ export OM_BATTERY_FULL_VOLTAGE=28.0
 export OM_MOWING_MOTOR_TEMP_HIGH=80.0
 export OM_MOWING_MOTOR_TEMP_LOW=40.0
 
-export OM_GPS_WAIT_TIME_SEC=10.0
-export OM_GPS_TIMEOUT_SEC=5.0
+export OM_GPS_WAIT_TIME_SEC=100.0
+export OM_GPS_TIMEOUT_SEC=15.0
 export OM_GPS_PORT=/dev/ttyUSB0
-export OM_GPS_BAUDRATE=921600
+export OM_GPS_BAUDRATE=115200
 
 
 # Mowing Behavior Settings
