@@ -92,8 +92,8 @@ services:
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
-      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
-      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
+      #ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
+      #ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
     tmpfs: /root/.ros/log                          # comment this line out to enable persistent logs
     volumes:
       - ./config/om:/config:ro
@@ -108,7 +108,7 @@ services:
 
   gps-relay:
     image: alpine/socat
-    command: "pty,link=/dev/gps,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4002"
+    command: "pty,link=/dev/gps,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 udp:${MOWER_IP}:4002"
     privileged: true
     volumes:
     - /dev:/dev
@@ -116,8 +116,28 @@ services:
 
   mowgli-relay:
     image: alpine/socat
-    command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 tcp:${MOWER_IP}:4001"
+    command: "pty,link=/dev/mowgli,ignoreof,waitslave,group-late=100,user-late=1000,raw,mode=660,echo=0 udp:${MOWER_IP}:4001"
     privileged: true
     volumes:
     - /dev:/dev
     restart: unless-stopped
+
+  gui:
+    container_name: openmower-gui
+    image: ghcr.io/cedbossneo/openmower-gui:master
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    environment:
+      ROS_IP: ${ROS_IP}
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      MOWER_CONFIG_FILE: /config/mower_config.sh
+      DOCKER_HOST: unix:///var/run/docker.sock
+      DB_PATH: /db
+    depends_on:
+      - roscore
+    volumes:
+      - /dev:/dev
+      - ./config/db:/db
+      - ./config/om:/config
+      - /var/run/docker.sock:/var/run/docker.sock

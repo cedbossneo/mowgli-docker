@@ -92,9 +92,9 @@ export OM_MOWING_MOTOR_TEMP_HIGH=80.0
 export OM_MOWING_MOTOR_TEMP_LOW=40.0
 
 export OM_GPS_WAIT_TIME_SEC=100.0
-export OM_GPS_TIMEOUT_SEC=15.0
-export OM_GPS_PORT=/dev/ttyUSB0
-export OM_GPS_BAUDRATE=115200
+export OM_GPS_TIMEOUT_SEC=30.0
+export OM_GPS_PORT=/dev/gps
+export OM_GPS_BAUDRATE=460800
 
 
 # Mowing Behavior Settings

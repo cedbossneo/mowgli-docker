@@ -1,1 +1,1 @@
-cat -v /dev/ttyUSB0
+cat -v /dev/gps
