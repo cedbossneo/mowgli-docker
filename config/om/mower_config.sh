@@ -2,6 +2,7 @@
 ## Hardware Specific Settings ##
 ################################
 
+export OM_NO_COMMS=true
 # The type of mower you're using, used to get some hardware parameters automatically
 # Currently supported:
 # YardForce500
@@ -84,6 +85,7 @@ export OM_OUTLINE_COUNT=4
 export OM_TOOL_WIDTH=0.13
 
 # Voltages for battery to be considered full or empty
+export OM_BATTERY_CRITICAL_VOLTAGE=22.0
 export OM_BATTERY_EMPTY_VOLTAGE=23.0
 export OM_BATTERY_FULL_VOLTAGE=28.0
 
@@ -106,8 +108,6 @@ export OM_AUTOMATIC_MODE=0
 
 export OM_OUTLINE_OFFSET=0.05
 
-export OM_NO_COMMS=true
-
 # Set default GPS antenna offset
 export OM_ANTENNA_OFFSET_X=0.3
 export OM_ANTENNA_OFFSET_Y=0.0
@@ -120,3 +120,17 @@ export OM_WHEEL_TICKS_PER_M=300.0
 
 # Heatmap UNSET or om_gps_accuracy
 export OM_HEATMAP_SENSOR_IDS=om_gps_accuracy
+
+################################
+##    External MQTT Broker    ##
+################################
+# Set thes in order to publish status data to your external MQTT broker.
+# This is for use with smart home.
+
+# export OM_MQTT_ENABLE=False
+# export OM_MQTT_HOSTNAME="your_mqtt_broker"
+# export OM_MQTT_PORT="1883"
+# export OM_MQTT_USER=""
+# export OM_MQTT_PASSWORD=""
+# export OM_MQTT_TOPIC_PREFIX="openmower"
+
