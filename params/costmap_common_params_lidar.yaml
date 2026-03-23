@@ -1,0 +1,32 @@
+#footprint: [[x0, y0], [x1, y1], ... [xn, yn]]
+robot_radius: 0.25
+
+global_frame: map
+robot_base_frame: base_link
+
+plugins:
+- name: static_layer
+  type: costmap_2d::StaticLayer
+- name: obstacle_layer
+  type: costmap_2d::ObstacleLayer
+- name: inflation_layer
+  type: costmap_2d::InflationLayer
+
+static_layer:
+  map_topic: mower_map_service/map
+
+obstacle_layer:
+  max_obstacle_height: 1.0
+  obstacle_range: 3.0
+  raytrace_range: 4.0
+  observation_sources: laser_scan
+  laser_scan:
+    topic: /scan
+    sensor_frame: base_laser
+    data_type: LaserScan
+    marking: true
+    clearing: true
+    obstacle_range: 3.0
+    raytrace_range: 4.0
+    min_obstacle_height: 0.05
+    max_obstacle_height: 1.0

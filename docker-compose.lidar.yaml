@@ -1,0 +1,57 @@
+# Lidar overlay for OpenMower/Mowgli
+# Adds LD19 lidar driver + costmap/EKF params for obstacle avoidance & GPS recovery
+#
+# Usage (with main docker-compose):
+#   docker compose -f docker-compose.yaml -f docker-compose.lidar.yaml up
+#
+# Required .env vars:
+#   LIDAR_PORT=/dev/ttyUSB0      (default)
+#   LIDAR_ODOM_ENABLE=false      (set true to enable laser odometry for GPS float recovery)
+
+version: '3'
+
+services:
+  ldlidar:
+    container_name: mowgli-ldlidar
+    labels:
+      project: openmower
+      app: ldlidar
+    build:
+      context: ./docker/ldlidar
+    image: mowgli-ldlidar:latest
+    network_mode: host
+    tty: true
+    privileged: true
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    environment:
+      ROS_MASTER_URI: http://${ROS_IP}:11311
+      ROS_IP: ${ROS_IP}
+      LIDAR_PORT: ${LIDAR_PORT:-/dev/ttyUSB0}
+      LIDAR_TOPIC: ${LIDAR_TOPIC:-/scan}
+      LIDAR_FRAME_ID: ${LIDAR_FRAME_ID:-base_laser}
+      LIDAR_FIX_TF: ${LIDAR_FIX_TF:-true}
+      LIDAR_ODOM_ENABLE: ${LIDAR_ODOM_ENABLE:-false}
+      ICP_ENABLE: ${ICP_ENABLE:-false}
+    volumes:
+      - /dev:/dev
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      - roscore
+    restart: unless-stopped
+
+  # Override openmower to mount lidar-aware costmap, planner, and EKF params
+  openmower:
+    volumes:
+      - ./params/costmap_common_params_lidar.yaml:/opt/open_mower_ros/src/open_mower/params/costmap_common_params.yaml:ro
+      - ./params/local_costmap_params_lidar.yaml:/opt/open_mower_ros/src/open_mower/params/local_costmap_params.yaml:ro
+      - ./params/global_costmap_params.yaml:/opt/open_mower_ros/src/open_mower/params/global_costmap_params.yaml:ro
+      - ./params/move_base_flex.yaml:/opt/open_mower_ros/src/open_mower/params/move_base_flex.yaml:ro
+      - ./params/ftc_local_planner.yaml:/opt/open_mower_ros/src/open_mower/params/ftc_local_planner.yaml:ro
+      - ./params/docking_ftc_local_planner.yaml:/opt/open_mower_ros/src/open_mower/params/docking_ftc_local_planner.yaml:ro
+      - ./params/global_planner_params.yaml:/opt/open_mower_ros/src/open_mower/params/global_planner_params.yaml:ro
+      - ./params/twist_mux_topics.yaml:/opt/open_mower_ros/src/open_mower/params/twist_mux_topics.yaml:ro
+      - ./params/ekf_lidar.yaml:/opt/open_mower_ros/src/open_mower/params/ekf.yaml:ro

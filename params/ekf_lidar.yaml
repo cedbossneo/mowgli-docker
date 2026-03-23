@@ -1,0 +1,41 @@
+ekf_gps_orientation:
+  frequency: 50.0
+  sensor_timeout: 1.0
+  two_d_mode: true
+  transform_time_offset: 0.0
+  transform_timeout: 0.0
+  print_diagnostics: true
+  debug: false
+  publish_tf: true
+
+  map_frame: none
+  odom_frame: map
+  base_link_frame: base_link
+  world_frame: map
+
+  # Source 0: EKF odometry (same as default)
+  pose0: /ekf_odometry/odom
+  pose0_config: [true, true, false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false]
+  pose0_nodelay: false
+  pose0_differential: false
+  pose0_relative: false
+  pose0_queue_size: 10
+
+  # Source 1: Laser odometry from rf2o (helps during GPS float)
+  # Uses differential mode so it provides relative motion, not absolute position
+  odom0: /odom_laser
+  odom0_config: [false, false, false,
+                 false, false, false,
+                 true, true, false,
+                 false, false, true,
+                 false, false, false]
+  odom0_nodelay: false
+  odom0_differential: true
+  odom0_relative: false
+  odom0_queue_size: 10
+
+  use_control: false

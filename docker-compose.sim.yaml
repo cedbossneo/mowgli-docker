@@ -1,0 +1,163 @@
+# Full OpenMower simulation: mower sim + openmower stack + lidar
+# No real robot, no GPS, no hardware needed.
+#
+# Usage:
+#   docker compose -f docker-compose.sim.yaml up --build
+#
+# Monitor:
+#   docker logs -f sim-mower        # mower position, GPS fix/float
+#   docker logs -f sim-openmower    # OpenMower navigation stack
+#   docker logs sim-monitor         # topic overview
+#
+# GUI:
+#   http://localhost:4006            # OpenMower GUI
+
+services:
+  roscore:
+    container_name: sim-roscore
+    image: ros:noetic-ros-base
+    network_mode: host
+    command: bash -c 'source /opt/ros/noetic/setup.bash && roscore'
+    environment:
+      ROS_IP: 127.0.0.1
+      ROS_MASTER_URI: http://127.0.0.1:11311
+    restart: unless-stopped
+
+  # Fake mower: publishes GPS, IMU, wheel odom, lidar, TF
+  mower-sim:
+    container_name: sim-mower
+    build:
+      context: ./docker/ldlidar_test
+    image: mowgli-ldlidar-test:latest
+    network_mode: host
+    tty: true
+    environment:
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 127.0.0.1
+      SIM_MODE: full
+      SIM_PATTERN: rectangle
+      SIM_SPEED: "0.3"
+      SIM_AREA_WIDTH: "10"
+      SIM_AREA_HEIGHT: "8"
+      SIM_GPS_FIX_RATIO: "0.7"
+      SIM_GPS_FLOAT_DRIFT: "0.5"
+      # Obstacles: x:y:radius - enough features for rf2o scan matching
+      # 2 main obstacles inside mowing area + fence posts well outside
+      # Mowing area is (2,2)-(8,6), obstacles placed to not block mowing lines
+      SIM_OBSTACLES: "5:4:0.3,3.5:3:0.25,-1:0:0.15,-1:2:0.15,-1:4:0.15,-1:6:0.15,-1:8:0.15,11:0:0.15,11:2:0.15,11:4:0.15,11:6:0.15,11:8:0.15,1:-1:0.15,3:-1:0.15,5:-1:0.15,7:-1:0.15,9:-1:0.15,1:9:0.15,3:9:0.15,5:9:0.15,7:9:0.15,9:9:0.15"
+      LIDAR_TOPIC: /scan
+      LIDAR_FRAME_ID: base_laser
+      LIDAR_ODOM_ENABLE: "true"
+      ICP_ENABLE: "true"
+    depends_on:
+      - roscore
+    restart: unless-stopped
+
+  # OpenMower stack (no hardware comms, no real GPS)
+  openmower:
+    container_name: sim-openmower
+    image: ${IMAGE:-ghcr.io/cedbossneo/mowgli-docker:upstream}
+    network_mode: host
+    tty: true
+    environment:
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 127.0.0.1
+      OM_PARAMS_PATH: /mower_params
+      OM_NO_COMMS: "true"
+      OM_NO_GPS: "true"
+      OM_LEGACY_CONFIG_MODE: "True"
+    command: >
+      bash -c '
+        source /config/mower_config.sh
+        export MOWER="$${OM_MOWER:-CUSTOM}"
+        export ESC_TYPE="$${OM_MOWER_ESC_TYPE:-xesc_mini}"
+        export HARDWARE_PLATFORM="$${OM_HARDWARE_VERSION:-1}"
+        export PARAMS_PATH="$${OM_PARAMS_PATH:-/config}"
+        export OM_LEGACY_CONFIG_MODE="True"
+        roslaunch --wait open_mower open_mower.launch
+      '
+    volumes:
+      - ./config/om/mower_config_sim.sh:/config/mower_config.sh:ro
+      - ./config/om:/config:ro
+      - ./config/om/rosconsole_sim.config:/config/rosconsole.config:ro
+      - ./mower_params:/mower_params:ro
+      - ./params/costmap_common_params_lidar.yaml:/opt/open_mower_ros/src/open_mower/params/costmap_common_params.yaml:ro
+      - ./params/local_costmap_params_lidar.yaml:/opt/open_mower_ros/src/open_mower/params/local_costmap_params.yaml:ro
+      - ./params/global_costmap_params.yaml:/opt/open_mower_ros/src/open_mower/params/global_costmap_params.yaml:ro
+      - ./params/move_base_flex.yaml:/opt/open_mower_ros/src/open_mower/params/move_base_flex.yaml:ro
+      - ./params/ftc_local_planner.yaml:/opt/open_mower_ros/src/open_mower/params/ftc_local_planner.yaml:ro
+      - ./params/docking_ftc_local_planner.yaml:/opt/open_mower_ros/src/open_mower/params/docking_ftc_local_planner.yaml:ro
+      - ./params/global_planner_params.yaml:/opt/open_mower_ros/src/open_mower/params/global_planner_params.yaml:ro
+      - ./params/twist_mux_topics.yaml:/opt/open_mower_ros/src/open_mower/params/twist_mux_topics.yaml:ro
+      - ./params/ekf_lidar.yaml:/opt/open_mower_ros/src/open_mower/params/ekf.yaml:ro
+    depends_on:
+      - roscore
+      - mower-sim
+    restart: unless-stopped
+
+  # Map setup: creates mowing area + docking point, then starts mowing
+  map-init:
+    container_name: sim-map-init
+    image: mowgli-ldlidar-test:latest
+    network_mode: host
+    environment:
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 127.0.0.1
+      SIM_DOCK_X: "1.0"
+      SIM_DOCK_Y: "1.0"
+      SIM_MOW_X1: "2.0"
+      SIM_MOW_Y1: "2.0"
+      SIM_MOW_X2: "8.0"
+      SIM_MOW_Y2: "6.0"
+    command: >
+      bash -c '
+        source /opt/ros/noetic/setup.bash
+        echo "Waiting for OpenMower stack..."
+        sleep 20
+        python3 /scripts/setup_sim_map.py
+      '
+    depends_on:
+      - openmower
+    restart: "no"
+
+  # Topic monitor
+  monitor:
+    container_name: sim-monitor
+    image: ros:noetic-ros-base
+    network_mode: host
+    environment:
+      ROS_MASTER_URI: http://127.0.0.1:11311
+      ROS_IP: 127.0.0.1
+    command: >
+      bash -c '
+        source /opt/ros/noetic/setup.bash
+        echo "Waiting for simulation to be fully running..."
+        sleep 30
+        echo ""
+        echo "=========================================="
+        echo "  FULL SIMULATION STATUS"
+        echo "=========================================="
+        echo ""
+        echo "=== ROS Nodes ==="
+        rosnode list 2>/dev/null || echo "No nodes yet"
+        echo ""
+        echo "=== Mower Logic State ==="
+        timeout 5 rostopic echo /mower_logic/current_state -n 1 2>&1 || echo "No state"
+        echo ""
+        echo "=== Scan rate ==="
+        timeout 6 rostopic hz /scan --window=5 2>&1 || echo "No scan"
+        echo ""
+        echo "=== GPS rate ==="
+        timeout 6 rostopic hz /ll/position/gps --window=5 2>&1 || echo "No GPS"
+        echo ""
+        echo "=== cmd_vel rate ==="
+        timeout 6 rostopic hz /ll/cmd_vel --window=5 2>&1 || echo "No cmd_vel"
+        echo ""
+        echo "=========================================="
+        echo "  docker logs -f sim-mower       # mower sim"
+        echo "  docker logs -f sim-openmower   # OpenMower stack"
+        echo "=========================================="
+      '
+    depends_on:
+      - map-init
+    restart: "no"

@@ -1,0 +1,3 @@
+# LDRobot LD19 lidar (CP2102 USB-to-serial adapter)
+# Install: sudo cp 99-ldlidar.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="lidar", MODE="0666"

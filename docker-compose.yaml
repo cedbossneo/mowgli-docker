@@ -2,7 +2,7 @@ version: '3'
 
 services:
   watchtower:
-    image: containrrr/watchtower
+    image: ghcr.io/nicholas-fedor/watchtower:latest
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
