@@ -8,7 +8,7 @@ name: Main
 on:
   workflow_dispatch:
   push:
-    branches: [ "cedbossneo" ]
+    branches: [ "cedbossneo", "jeremysalwen" ]
     paths:
       - docker/openmower/**
       - .github/workflows/docker-publish-main.yml
