@@ -3,8 +3,8 @@
 FROM ghcr.io/nekraus/open_mower_ros_mowgli:Mowgli-compatible
 
 # Set timezone
-ENV TZ=Europe/Paris
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+#ENV TZ=Europe/Paris
+#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Patch OpenMower
 ADD patch.sh /tmp/patch.sh
